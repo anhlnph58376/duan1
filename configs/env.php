@@ -16,11 +16,13 @@ define('PATH_CONTROLLER',       PATH_ROOT . 'controllers/');
 
 define('PATH_MODEL',            PATH_ROOT . 'models/');
 
+define('BASE_UPLOAD_VIEW',            PATH_ROOT . 'views/uploads/');
+
 define('DB_HOST',     'localhost');
 define('DB_PORT',     '3306');
 define('DB_USERNAME', 'root');
 define('DB_PASSWORD', '');
-define('DB_NAME',     'duan1_tour');
+define('DB_NAME',     'duan1_tuor');
 define('DB_OPTIONS', [
     PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
     PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
