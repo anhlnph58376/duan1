@@ -12,7 +12,7 @@ $old_data = $_SESSION['old_data'] ?? [];
 unset($_SESSION['old_data']); // Xóa sau khi lấy ra
 ?>
 <!DOCTYPE html>
-<html lang="en">
+<html lang="vi">
 
 <head>
 
@@ -251,9 +251,9 @@ unset($_SESSION['old_data']); // Xóa sau khi lấy ra
                     </div>
                     <div class="card-body">
                         <?php
-                        // Giả định biến $tour chứa dữ liệu chi tiết tour
+                        // Biến $tour chứa dữ liệu chi tiết tour
                         // Ví dụ: $tour = ['id' => 1, 'name' => 'Tour Vịnh Hạ Long', 'tour_code' => 'HL001', ...];
-                        // Giả định BASE_URL đã được định nghĩa
+                        // BASE_URL đã được định nghĩa
                         $base_url = defined('BASE_URL') ? BASE_URL : '/';
 
                         // Kiểm tra và thoát nếu không có dữ liệu tour
