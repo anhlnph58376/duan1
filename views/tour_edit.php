@@ -12,7 +12,7 @@ $old_data = $_SESSION['old_data'] ?? [];
 unset($_SESSION['old_data']); // Xóa sau khi lấy ra
 ?>
 <!DOCTYPE html>
-<html lang="en">
+<html lang="vi">
 
 <head>
 

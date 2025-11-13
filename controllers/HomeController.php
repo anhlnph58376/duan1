@@ -27,7 +27,7 @@ class HomeController
         }
     }
 
-    // Trong controllers/HomeController.php
+    // Cập nhật tour
     public function updateTour()
     {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
