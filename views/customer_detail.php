@@ -1,16 +1,3 @@
-<?php if (isset($_SESSION['error_tour_code'])): ?>
-    <div class="alert alert-danger mb-4" role="alert">
-        <?= $_SESSION['error_tour_code'] ?>
-    </div>
-<?php
-    // Xóa session lỗi ngay sau khi hiển thị
-    unset($_SESSION['error_tour_code']);
-endif;
-
-// Lấy dữ liệu cũ (nếu có)
-$old_data = $_SESSION['old_data'] ?? [];
-unset($_SESSION['old_data']); // Xóa sau khi lấy ra
-?>
 <!DOCTYPE html>
 <html lang="vi">
 
@@ -65,7 +52,7 @@ unset($_SESSION['old_data']); // Xóa sau khi lấy ra
             <hr class="sidebar-divider">
 
             <!-- Nav Item-->
-            <li class="nav-item active">
+            <li class="nav-item">
                 <a class="nav-link" href="?action=tours">
                     <span>Quản lý tour</span>
                 </a>
@@ -73,15 +60,15 @@ unset($_SESSION['old_data']); // Xóa sau khi lấy ra
 
             <hr class="sidebar-divider">
 
-            <li class="nav-item active">
-                <a class="nav-link" href="#">
+            <li class="nav-item">
+                <a class="nav-link" href="?action=bookings">
                     <span>Quản lý booking</span>
                 </a>
             </li>
 
             <hr class="sidebar-divider">
 
-            <li class="nav-item active">
+            <li class="nav-item">
                 <a class="nav-link" href="#">
                     <span>Booking assignment</span>
                 </a>
@@ -89,7 +76,7 @@ unset($_SESSION['old_data']); // Xóa sau khi lấy ra
 
             <hr class="sidebar-divider">
 
-            <li class="nav-item">
+            <li class="nav-item active">
                 <a class="nav-link" href="?action=customers">
                     <span>Quản lý khách hàng</span>
                 </a>
@@ -97,7 +84,7 @@ unset($_SESSION['old_data']); // Xóa sau khi lấy ra
 
             <hr class="sidebar-divider">
 
-            <li class="nav-item active">
+            <li class="nav-item">
                 <a class="nav-link" href="#">
                     <span>Quản lý đoàn</span>
                 </a>
@@ -105,7 +92,7 @@ unset($_SESSION['old_data']); // Xóa sau khi lấy ra
 
             <hr class="sidebar-divider">
 
-            <li class="nav-item active">
+            <li class="nav-item">
                 <a class="nav-link" href="#">
                     <span>Quản lý hưỡng dẫn viên</span>
                 </a>
@@ -113,7 +100,7 @@ unset($_SESSION['old_data']); // Xóa sau khi lấy ra
 
             <hr class="sidebar-divider">
 
-            <li class="nav-item active">
+            <li class="nav-item">
                 <a class="nav-link" href="#">
                     <span>Quản lý tài khoản</span>
                 </a>
@@ -242,87 +229,76 @@ unset($_SESSION['old_data']); // Xóa sau khi lấy ra
             <!-- End of Main Content -->
             <div class="container-fluid">
                 <div class="d-sm-flex align-items-center justify-content-between mb-4">
-                    <h1 class="h3 mb-0 text-gray-800">Quản lý tour</h1>
+                    <h1 class="h3 mb-0 text-gray-800">Quản lý khách hàng</h1>
                 </div>
 
                 <div class="card shadow mb-4">
                     <div class="card-header py-3">
-                        <h6 class="m-0 font-weight-bold text-primary">Thêm tour</h6>
+                        <h6 class="m-0 font-weight-bold text-primary">Chi tiết khách hàng</h6>
                     </div>
                     <div class="card-body">
                         <?php
-                        // Biến $tour chứa dữ liệu chi tiết tour
-                        // Ví dụ: $tour = ['id' => 1, 'name' => 'Tour Vịnh Hạ Long', 'tour_code' => 'HL001', ...];
-                        // BASE_URL đã được định nghĩa
-                        $base_url = defined('BASE_URL') ? BASE_URL : '/';
-
-                        // Kiểm tra và thoát nếu không có dữ liệu tour
-                        if (!isset($tour)) {
-                            echo '<div class="alert alert-danger">Không tìm thấy thông tin tour.</div>';
+                        // Kiểm tra và thoát nếu không có dữ liệu customer
+                        if (!isset($customer)) {
+                            echo '<div class="alert alert-danger">Không tìm thấy thông tin khách hàng.</div>';
                             return;
                         }
                         ?>
 
                         <div class="container-fluid mt-4">
                             <div class="d-sm-flex align-items-center justify-content-between mb-4">
-                                <a href="?action=tours" class="btn btn-secondary">
-                                    <i class="fas fa-arrow-left me-2"></i> Quay lại Danh sách Tour
+                                <a href="?action=customers" class="btn btn-secondary">
+                                    <i class="fas fa-arrow-left me-2"></i> Quay lại Danh sách Khách hàng
                                 </a>
                             </div>
 
                             <div class="card shadow mb-4">
                                 <div class="card-header py-3">
                                     <h1 class="h3 mb-0 text-gray-800">
-                                        <i class="fas fa-info-circle"></i> Chi tiết Tour: <?= htmlspecialchars($tour['name']) ?>
+                                        <i class="fas fa-user"></i> Chi tiết Khách hàng: <?= htmlspecialchars($customer['name']) ?>
                                     </h1>
                                 </div>
 
                                 <div class="card-body">
                                     <div class="row">
                                         <div class="col-lg-4 mb-4">
-                                            <h5 class="text-primary mb-3">Hình ảnh Tour</h5>
-                                            <?php if (!empty($tour['image'])): ?>
-                                                <img src="<?= $tour['image'] ?>"
-                                                    alt="<?= htmlspecialchars($tour['name']) ?>"
-                                                    class="img-fluid rounded shadow-sm"
-                                                    style="max-height: 400px; width: 100%; object-fit: cover;">
-                                            <?php else: ?>
-                                                <div class="border p-4 text-center text-muted rounded">Không có hình ảnh</div>
-                                            <?php endif; ?>
+                                            <h5 class="text-primary mb-3">Ảnh đại diện</h5>
+                                            <div class="text-center">
+                                                <img src="assets/img/undraw_profile_1.svg"
+                                                    alt="Customer Avatar"
+                                                    class="img-fluid rounded-circle shadow-sm"
+                                                    style="max-height: 200px; width: 200px; object-fit: cover;">
+                                            </div>
                                         </div>
 
                                         <div class="col-lg-8">
-                                            <h5 class="text-primary mb-3">Thông tin Cơ bản</h5>
+                                            <h5 class="text-primary mb-3">Thông tin Cá nhân</h5>
                                             <ul class="list-group list-group-flush mb-4">
                                                 <li class="list-group-item">
-                                                    <strong>Mã Tour:</strong>
-                                                    <span class="badge bg-info text-dark"><?= htmlspecialchars($tour['tour_code']) ?></span>
+                                                    <strong>ID:</strong>
+                                                    <span class="badge bg-info text-dark">#<?= htmlspecialchars($customer['id']) ?></span>
                                                 </li>
                                                 <li class="list-group-item">
-                                                    <strong>Tên Tour:</strong>
-                                                    <?= htmlspecialchars($tour['name']) ?>
+                                                    <strong>Tên khách hàng:</strong>
+                                                    <?= htmlspecialchars($customer['name']) ?>
                                                 </li>
                                                 <li class="list-group-item">
-                                                    <strong>Loại Tour:</strong>
-                                                    <span class="badge <?= $tour['is_international'] == 1 ? 'bg-warning text-dark' : 'bg-success text-white' ?>">
-                                                        <?= $tour['is_international'] == 1 ? 'Quốc tế' : 'Nội địa' ?>
-                                                    </span>
+                                                    <strong>Số điện thoại:</strong>
+                                                    <span class="text-primary fw-bold"><?= htmlspecialchars($customer['phone']) ?></span>
                                                 </li>
                                                 <li class="list-group-item">
-                                                    <strong>Thời lượng:</strong>
-                                                    <?= htmlspecialchars($tour['duration']) ?>
+                                                    <strong>Email:</strong>
+                                                    <?= !empty($customer['email']) ? '<a href="mailto:' . htmlspecialchars($customer['email']) . '">' . htmlspecialchars($customer['email']) . '</a>' : '<span class="text-muted">Chưa cập nhật</span>' ?>
                                                 </li>
                                                 <li class="list-group-item">
-                                                    <strong>Giá Cơ bản:</strong>
-                                                    <span class="text-danger fw-bold fs-5">
-                                                        <?= number_format($tour['base_price'], 0, ',', '.') ?> VNĐ/Người
-                                                    </span>
+                                                    <strong>Địa chỉ:</strong>
+                                                    <?= !empty($customer['address']) ? htmlspecialchars($customer['address']) : '<span class="text-muted">Chưa cập nhật</span>' ?>
                                                 </li>
                                             </ul>
 
-                                            <h5 class="text-primary mt-4 mb-3">Mô tả Chi tiết</h5>
+                                            <h5 class="text-primary mt-4 mb-3">Lịch sử Giao dịch & Ghi chú</h5>
                                             <div class="p-3 bg-light rounded border">
-                                                <?= nl2br(htmlspecialchars($tour['description'])) ?>
+                                                <?= !empty($customer['history_notes']) ? nl2br(htmlspecialchars($customer['history_notes'])) : '<span class="text-muted">Chưa có ghi chú nào</span>' ?>
                                             </div>
                                         </div>
                                     </div>
@@ -330,11 +306,11 @@ unset($_SESSION['old_data']); // Xóa sau khi lấy ra
                                     <hr class="my-4">
 
                                     <div class="d-flex justify-content-end">
-                                        <a href="?action=tour_edit&id=<?= $tour['id'] ?>" class="btn btn-primary me-2">
-                                            <i class="fas fa-edit"></i> Chỉnh sửa Tour
+                                        <a href="?action=customer_edit&id=<?= $customer['id'] ?>" class="btn btn-primary me-2">
+                                            <i class="fas fa-edit"></i> Chỉnh sửa Khách hàng
                                         </a>
-                                        <a href="?action=tour_delete&id=<?= $tour['id'] ?>" class="btn btn-danger">
-                                            <i class="fas fa-trash"></i> Xóa Tour
+                                        <a href="?action=customer_delete&id=<?= $customer['id'] ?>" class="btn btn-danger">
+                                            <i class="fas fa-trash"></i> Xóa Khách hàng
                                         </a>
                                     </div>
                                 </div>
@@ -372,34 +348,33 @@ unset($_SESSION['old_data']); // Xóa sau khi lấy ra
                 <div class="modal-header">
                     <h5 class="modal-title" id="exampleModalLabel">Ready to Leave?</h5>
                     <button class="close" type="button" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">×</span>
-                    </button>
-                </div>
-                <div class="modal-body">Select "Logout" below if you are ready to end your current session.</div>
-                <div class="modal-footer">
-                    <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
-                    <a class="btn btn-primary" href="login.html">Logout</a>
-                </div>
-            </div>
+                <span aria-hidden="true">×</span>
+            </button>
+        </div>
+        <div class="modal-body">Select "Logout" below if you are ready to end your current session.</div>
+        <div class="modal-footer">
+            <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
+            <a class="btn btn-primary" href="login.html">Logout</a>
         </div>
     </div>
+</div>
 
-    <!-- Bootstrap core JavaScript-->
-    <script src="assets/vendor/jquery/jquery.min.js"></script>
-    <script src="assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+<!-- Bootstrap core JavaScript-->
+<script src="assets/vendor/jquery/jquery.min.js"></script>
+<script src="assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
 
-    <!-- Core plugin JavaScript-->
-    <script src="assets/vendor/jquery-easing/jquery.easing.min.js"></script>
+<!-- Core plugin JavaScript-->
+<script src="assets/vendor/jquery-easing/jquery.easing.min.js"></script>
 
-    <!-- Custom scripts for all pages-->
-    <script src="assets/js/sb-admin-2.min.js"></script>
+<!-- Custom scripts for all pages-->
+<script src="assets/js/sb-admin-2.min.js"></script>
 
-    <!-- Page level plugins -->
-    <script src="assets/vendor/chart.js/Chart.min.js"></script>
+<!-- Page level plugins -->
+<script src="assets/vendor/chart.js/Chart.min.js"></script>
 
-    <!-- Page level custom scripts -->
-    <script src="assets/js/demo/chart-area-demo.js"></script>
-    <script src="assets/js/demo/chart-pie-demo.js"></script>
+<!-- Page level custom scripts -->
+<script src="assets/js/demo/chart-area-demo.js"></script>
+<script src="assets/js/demo/chart-pie-demo.js"></script>
 
 </body>
 

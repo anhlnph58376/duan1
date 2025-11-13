@@ -1,16 +1,3 @@
-<?php if (isset($_SESSION['error_tour_code'])): ?>
-    <div class="alert alert-danger mb-4" role="alert">
-        <?= $_SESSION['error_tour_code'] ?>
-    </div>
-<?php
-    // Xóa session lỗi ngay sau khi hiển thị
-    unset($_SESSION['error_tour_code']);
-endif;
-
-// Lấy dữ liệu cũ (nếu có)
-$old_data = $_SESSION['old_data'] ?? [];
-unset($_SESSION['old_data']); // Xóa sau khi lấy ra
-?>
 <!DOCTYPE html>
 <html lang="vi">
 
@@ -24,13 +11,13 @@ unset($_SESSION['old_data']); // Xóa sau khi lấy ra
 
     <title></title>
 
-    <!-- Custom fonts for this template-->
+    <!-- Phông chữ tùy chỉnh cho template này-->
     <link href="assets/vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
     <link
         href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i"
         rel="stylesheet">
 
-    <!-- Custom styles for this template-->
+    <!-- Styles tùy chỉnh cho template này-->
     <link href="assets/css/sb-admin-2.min.css" rel="stylesheet">
 
 </head>
@@ -65,7 +52,7 @@ unset($_SESSION['old_data']); // Xóa sau khi lấy ra
             <hr class="sidebar-divider">
 
             <!-- Nav Item-->
-            <li class="nav-item active">
+            <li class="nav-item">
                 <a class="nav-link" href="?action=tours">
                     <span>Quản lý tour</span>
                 </a>
@@ -73,15 +60,15 @@ unset($_SESSION['old_data']); // Xóa sau khi lấy ra
 
             <hr class="sidebar-divider">
 
-            <li class="nav-item active">
-                <a class="nav-link" href="#">
+            <li class="nav-item">
+                <a class="nav-link" href="?action=bookings">
                     <span>Quản lý booking</span>
                 </a>
             </li>
 
             <hr class="sidebar-divider">
 
-            <li class="nav-item active">
+            <li class="nav-item">
                 <a class="nav-link" href="#">
                     <span>Booking assignment</span>
                 </a>
@@ -89,7 +76,7 @@ unset($_SESSION['old_data']); // Xóa sau khi lấy ra
 
             <hr class="sidebar-divider">
 
-            <li class="nav-item">
+            <li class="nav-item active">
                 <a class="nav-link" href="?action=customers">
                     <span>Quản lý khách hàng</span>
                 </a>
@@ -97,7 +84,7 @@ unset($_SESSION['old_data']); // Xóa sau khi lấy ra
 
             <hr class="sidebar-divider">
 
-            <li class="nav-item active">
+            <li class="nav-item">
                 <a class="nav-link" href="#">
                     <span>Quản lý đoàn</span>
                 </a>
@@ -105,7 +92,7 @@ unset($_SESSION['old_data']); // Xóa sau khi lấy ra
 
             <hr class="sidebar-divider">
 
-            <li class="nav-item active">
+            <li class="nav-item">
                 <a class="nav-link" href="#">
                     <span>Quản lý hưỡng dẫn viên</span>
                 </a>
@@ -113,7 +100,7 @@ unset($_SESSION['old_data']); // Xóa sau khi lấy ra
 
             <hr class="sidebar-divider">
 
-            <li class="nav-item active">
+            <li class="nav-item">
                 <a class="nav-link" href="#">
                     <span>Quản lý tài khoản</span>
                 </a>
@@ -242,103 +229,52 @@ unset($_SESSION['old_data']); // Xóa sau khi lấy ra
             <!-- End of Main Content -->
             <div class="container-fluid">
                 <div class="d-sm-flex align-items-center justify-content-between mb-4">
-                    <h1 class="h3 mb-0 text-gray-800">Quản lý tour</h1>
+                    <h1 class="h3 mb-0 text-gray-800">Quản lý khách hàng</h1>
                 </div>
 
                 <div class="card shadow mb-4">
-                    <div class="card-header py-3">
-                        <h6 class="m-0 font-weight-bold text-primary">Thêm tour</h6>
+                    <div class="card-header py-3 d-flex justify-content-between align-items-center">
+                        <h6 class="m-0 font-weight-bold text-primary">Danh sách khách hàng</h6>
+                        <a href="?action=customer_add" class="btn btn-primary">Thêm khách hàng</a>
                     </div>
                     <div class="card-body">
-                        <?php
-                        // Biến $tour chứa dữ liệu chi tiết tour
-                        // Ví dụ: $tour = ['id' => 1, 'name' => 'Tour Vịnh Hạ Long', 'tour_code' => 'HL001', ...];
-                        // BASE_URL đã được định nghĩa
-                        $base_url = defined('BASE_URL') ? BASE_URL : '/';
-
-                        // Kiểm tra và thoát nếu không có dữ liệu tour
-                        if (!isset($tour)) {
-                            echo '<div class="alert alert-danger">Không tìm thấy thông tin tour.</div>';
-                            return;
-                        }
-                        ?>
-
-                        <div class="container-fluid mt-4">
-                            <div class="d-sm-flex align-items-center justify-content-between mb-4">
-                                <a href="?action=tours" class="btn btn-secondary">
-                                    <i class="fas fa-arrow-left me-2"></i> Quay lại Danh sách Tour
-                                </a>
-                            </div>
-
-                            <div class="card shadow mb-4">
-                                <div class="card-header py-3">
-                                    <h1 class="h3 mb-0 text-gray-800">
-                                        <i class="fas fa-info-circle"></i> Chi tiết Tour: <?= htmlspecialchars($tour['name']) ?>
-                                    </h1>
-                                </div>
-
-                                <div class="card-body">
-                                    <div class="row">
-                                        <div class="col-lg-4 mb-4">
-                                            <h5 class="text-primary mb-3">Hình ảnh Tour</h5>
-                                            <?php if (!empty($tour['image'])): ?>
-                                                <img src="<?= $tour['image'] ?>"
-                                                    alt="<?= htmlspecialchars($tour['name']) ?>"
-                                                    class="img-fluid rounded shadow-sm"
-                                                    style="max-height: 400px; width: 100%; object-fit: cover;">
-                                            <?php else: ?>
-                                                <div class="border p-4 text-center text-muted rounded">Không có hình ảnh</div>
-                                            <?php endif; ?>
-                                        </div>
-
-                                        <div class="col-lg-8">
-                                            <h5 class="text-primary mb-3">Thông tin Cơ bản</h5>
-                                            <ul class="list-group list-group-flush mb-4">
-                                                <li class="list-group-item">
-                                                    <strong>Mã Tour:</strong>
-                                                    <span class="badge bg-info text-dark"><?= htmlspecialchars($tour['tour_code']) ?></span>
-                                                </li>
-                                                <li class="list-group-item">
-                                                    <strong>Tên Tour:</strong>
-                                                    <?= htmlspecialchars($tour['name']) ?>
-                                                </li>
-                                                <li class="list-group-item">
-                                                    <strong>Loại Tour:</strong>
-                                                    <span class="badge <?= $tour['is_international'] == 1 ? 'bg-warning text-dark' : 'bg-success text-white' ?>">
-                                                        <?= $tour['is_international'] == 1 ? 'Quốc tế' : 'Nội địa' ?>
-                                                    </span>
-                                                </li>
-                                                <li class="list-group-item">
-                                                    <strong>Thời lượng:</strong>
-                                                    <?= htmlspecialchars($tour['duration']) ?>
-                                                </li>
-                                                <li class="list-group-item">
-                                                    <strong>Giá Cơ bản:</strong>
-                                                    <span class="text-danger fw-bold fs-5">
-                                                        <?= number_format($tour['base_price'], 0, ',', '.') ?> VNĐ/Người
-                                                    </span>
-                                                </li>
-                                            </ul>
-
-                                            <h5 class="text-primary mt-4 mb-3">Mô tả Chi tiết</h5>
-                                            <div class="p-3 bg-light rounded border">
-                                                <?= nl2br(htmlspecialchars($tour['description'])) ?>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <hr class="my-4">
-
-                                    <div class="d-flex justify-content-end">
-                                        <a href="?action=tour_edit&id=<?= $tour['id'] ?>" class="btn btn-primary me-2">
-                                            <i class="fas fa-edit"></i> Chỉnh sửa Tour
-                                        </a>
-                                        <a href="?action=tour_delete&id=<?= $tour['id'] ?>" class="btn btn-danger">
-                                            <i class="fas fa-trash"></i> Xóa Tour
-                                        </a>
-                                    </div>
-                                </div>
-                            </div>
+                        <div class="table-responsive">
+                            <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                                <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Tên khách hàng</th>
+                                        <th>Số điện thoại</th>
+                                        <th>Email</th>
+                                        <th>Địa chỉ</th>
+                                        <th>Ghi chú lịch sử</th>
+                                        <th>Thao tác</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <?php foreach ($customers as $customer) { ?>
+                                        <tr>
+                                            <td><?= $customer['id'] ?></td>
+                                            <td><?= $customer['name'] ?></td>
+                                            <td><?= $customer['phone'] ?></td>
+                                            <td><?= $customer['email'] ?? 'N/A' ?></td>
+                                            <td><?= $customer['address'] ?? 'N/A' ?></td>
+                                            <td><?= substr($customer['history_notes'] ?? '', 0, 50) ?><?= strlen($customer['history_notes'] ?? '') > 50 ? '...' : '' ?></td>
+                                            <td class="align-middle">
+                                                <a href="?action=customer_edit&id=<?= $customer['id'] ?>" class="btn btn-primary btn-circle btn-sm">
+                                                    <i class="fas fa-edit"></i>
+                                                </a>
+                                                <a href="?action=customer_delete&id=<?= $customer['id'] ?>" class="btn btn-danger btn-circle btn-sm">
+                                                    <i class="fas fa-trash"></i>
+                                                </a>
+                                                <a href="?action=customer_detail&id=<?= $customer['id'] ?>" class="btn btn-info btn-circle btn-sm">
+                                                    <i class="fas fa-search"></i>
+                                                </a>
+                                            </td>
+                                        </tr>
+                                    <?php } ?>
+                                </tbody>
+                            </table>
                         </div>
                     </div>
                 </div>

@@ -4,6 +4,7 @@ $action = $_GET['action'] ?? '/';
 
 $homeController = new HomeController;
 $bookingController = new BookingController;
+$customerController = new CustomerController;
 
 match ($action) {
     // Home routes
@@ -32,4 +33,13 @@ match ($action) {
     'update_status'    => $bookingController->update_status(),
     'booking_export'   => $bookingController->export(),
     'get_tour_info'    => $bookingController->get_tour_info(),
+
+    // Customer routes
+    'customers'         => $customerController->index(),
+    'customer_edit'     => $customerController->customer_edit(),
+    'updateCustomer'    => $customerController->updateCustomer(),
+    'customer_add'      => $customerController->customer_add(),
+    'addCustomer'       => $customerController->addCustomer(),
+    'customer_delete'   => $customerController->customer_delete(),
+    'customer_detail'   => $customerController->customer_detail(),
 };
