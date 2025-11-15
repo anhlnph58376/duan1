@@ -35,10 +35,6 @@ $data = !empty($old_data) ? $old_data : $booking;
 
     <!-- Custom styles for this template-->
     <link href="assets/css/sb-admin-2.min.css" rel="stylesheet">
-<<<<<<< HEAD
-
-=======
->>>>>>> 7e6d6296c31abfa1830c67d2af529c7f9fc3ab5f
 </head>
 
 <body id="page-top">

@@ -69,6 +69,14 @@
 
             <hr class="sidebar-divider">
 
+            <li class="nav-item">
+                <a class="nav-link" href="#" style="cursor: pointer;">
+                    <span>Booking assignment</span>
+                </a>
+            </li>
+
+            <hr class="sidebar-divider">
+
             <li class="nav-item active">
                 <a class="nav-link" href="#">
                     <span>Quản lý khách hàng</span>

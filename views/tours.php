@@ -52,8 +52,9 @@
             <hr class="sidebar-divider">
 
             <!-- Nav Item-->
-            <li class="nav-item active">
-                <a class="nav-link" href="?action=tours">
+
+            <li class="nav-item">
+                <a class="nav-link" href="?action=tours" style="cursor: pointer;">
                     <span>Quản lý tour</span>
                 </a>
             </li>
@@ -69,6 +70,7 @@
             <hr class="sidebar-divider">
 
             <li class="nav-item">
+                <a class="nav-link" href="#" style="cursor: pointer;">
                     <span>Booking assignment</span>
                 </a>
             </li>

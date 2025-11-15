@@ -1,9 +1,8 @@
 <?php
-
 class BookingController
 {
-    public $booking;
-    public $tours;
+    protected $booking;
+    protected $tours;
 
     public function __construct()
     {
@@ -11,321 +10,305 @@ class BookingController
         $this->tours = new Tours();
     }
 
-    /**
-     * Hiển thị danh sách tất cả booking
-     */
-    public function index()
+    // Hiển thị danh sách booking
+    public function bookings()
     {
         $bookings = $this->booking->getAllBookings();
         $stats = $this->booking->getBookingStats();
-        require_once PATH_VIEW . 'booking_list.php';
-    }
-
-    /**
-     * Tìm kiếm booking
-     */
-    public function search()
-    {
-        $keyword = $_GET['keyword'] ?? '';
-        $status = $_GET['status'] ?? '';
-        $date_from = $_GET['date_from'] ?? '';
-        $date_to = $_GET['date_to'] ?? '';
         
-        $bookings = $this->booking->searchBookings($keyword, $status, $date_from, $date_to);
-        $stats = $this->booking->getBookingStats();
-        require_once PATH_VIEW . 'booking_list.php';
+        require_once PATH_VIEW . 'bookings.php';
     }
 
-    /**
-     * Hiển thị form thêm booking mới
-     */
-    public function add()
+    // Hiển thị chi tiết booking
+    public function booking_detail()
     {
-        $tours = $this->tours->getAlltour();
-        $users = $this->booking->getAllUsers();
+        $id = $_GET['id'] ?? 0;
+        $booking = $this->booking->getBookingById($id);
+        
+        if (!$booking) {
+            $_SESSION['error'] = 'Không tìm thấy booking!';
+            header('Location: ?action=bookings');
+            exit;
+        }
+
+        require_once PATH_VIEW . 'booking_detail.php';
+    }
+
+    // Hiển thị form thêm booking
+    public function booking_add()
+    {
+        $customers = $this->booking->getAllCustomers();
         require_once PATH_VIEW . 'booking_add.php';
     }
 
-    /**
-     * Xử lý thêm booking mới
-     */
-    public function store()
+    // Xử lý thêm booking
+    public function addBooking()
     {
-        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            $user_id = $_POST['user_id'];
-            $tour_id = $_POST['tour_id'];
-            $booking_date = $_POST['booking_date'];
-            $number_of_people = $_POST['number_of_people'];
-            $total_price = $_POST['total_price'];
-            $notes = $_POST['notes'] ?? '';
-            $status = $_POST['status'] ?? 'pending';
-
+        if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+            // Lấy dữ liệu từ form
+            $customer_name = trim($_POST['customer_name']);
+            $customer_email = trim($_POST['customer_email']); 
+            $customer_phone = trim($_POST['customer_phone']);
+            $customer_address = trim($_POST['customer_address'] ?? '');
+            $booking_date = trim($_POST['booking_date']);
+            $total_amount = trim($_POST['total_amount']);
+            $deposit_amount = trim($_POST['deposit_amount'] ?? 0);
+            $status = trim($_POST['status'] ?? 'Pending');
+            
             // Validate dữ liệu
-            if (empty($user_id) || empty($tour_id) || empty($booking_date) || empty($number_of_people)) {
-                $_SESSION['error_message'] = "Vui lòng điền đầy đủ thông tin bắt buộc!";
+            $errors = [];
+            
+            if (empty($customer_name)) {
+                $errors[] = 'Tên khách hàng không được để trống!';
+            }
+            
+            if (empty($customer_phone)) {
+                $errors[] = 'Số điện thoại không được để trống!';
+            }
+            
+            if (empty($booking_date)) {
+                $errors[] = 'Ngày đặt tour không được để trống!';
+            }
+            
+            if (empty($total_amount) || $total_amount < 0) {
+                $errors[] = 'Tổng tiền phải lớn hơn 0!';
+            }
+            
+            // Nếu có lỗi, lưu lại dữ liệu cũ và hiển thị lỗi
+            if (!empty($errors)) {
+                $_SESSION['error_booking'] = implode('<br>', $errors);
                 $_SESSION['old_data'] = $_POST;
                 header('Location: ?action=booking_add');
-                exit();
+                exit;
             }
-
-            // Validate ngày booking
-            if (strtotime($booking_date) < strtotime('today')) {
-                $_SESSION['error_message'] = "Ngày booking không thể là ngày trong quá khứ!";
-                $_SESSION['old_data'] = $_POST;
-                header('Location: ?action=booking_add');
-                exit();
-            }
-
-            if ($this->booking->addBooking($user_id, $tour_id, $booking_date, $number_of_people, $total_price, $notes, $status)) {
-                $_SESSION['success_message'] = "Thêm booking thành công!";
-                header('Location: ?action=bookings');
-            } else {
-                $_SESSION['error_message'] = "Có lỗi xảy ra khi thêm booking!";
-                header('Location: ?action=booking_add');
-            }
-            exit();
-        }
-    }
-
-    /**
-     * Hiển thị chi tiết booking
-     */
-    public function detail()
-    {
-        if (isset($_GET['id'])) {
-            $id = $_GET['id'];
-            $booking = $this->booking->getBookingById($id);
-            if ($booking) {
-                require_once PATH_VIEW . 'booking_detail.php';
-            } else {
-                $_SESSION['error_message'] = "Booking không tồn tại!";
-                header('Location: ?action=bookings');
-                exit();
-            }
-        }
-    }
-
-    /**
-     * Hiển thị form chỉnh sửa booking
-     */
-    public function edit()
-    {
-        if (isset($_GET['id'])) {
-            $id = $_GET['id'];
-            $booking = $this->booking->getBookingById($id);
             
-            if (!$booking) {
-                $_SESSION['error_message'] = "Booking không tồn tại!";
-                header('Location: ?action=bookings');
-                exit();
-            }
-
-            $tours = $this->tours->getAlltour();
-            $users = $this->booking->getAllUsers();
-            $guides = $this->booking->getAllGuides();
+            // Tạo data array cho booking
+            $data = [
+                'customer_name' => $customer_name,
+                'customer_email' => $customer_email,
+                'customer_phone' => $customer_phone,
+                'customer_address' => $customer_address,
+                'booking_date' => $booking_date,
+                'total_amount' => $total_amount,
+                'deposit_amount' => $deposit_amount,
+                'status' => $status
+            ];
             
-            require_once PATH_VIEW . 'booking_edit.php';
+            try {
+                $result = $this->booking->addBooking($data);
+                
+                if ($result) {
+                    $_SESSION['success'] = 'Thêm booking thành công!';
+                    header('Location: ?action=bookings');
+                } else {
+                    $_SESSION['error'] = 'Thêm booking thất bại!';
+                    header('Location: ?action=booking_add');
+                }
+            } catch (Exception $e) {
+                $_SESSION['error'] = 'Lỗi: ' . $e->getMessage();
+                header('Location: ?action=booking_add');
+            }
+            exit;
         }
     }
 
-    /**
-     * Xử lý cập nhật booking
-     */
-    public function update()
+    // Hiển thị form sửa booking
+    public function booking_edit()
     {
-        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            $id = $_POST['id'];
-            $user_id = $_POST['user_id'];
-            $tour_id = $_POST['tour_id'];
-            $booking_date = $_POST['booking_date'];
-            $number_of_people = $_POST['number_of_people'];
-            $total_price = $_POST['total_price'];
-            $notes = $_POST['notes'] ?? '';
-            $status = $_POST['status'];
+        $id = $_GET['id'] ?? 0;
+        $booking = $this->booking->getBookingById($id);
+        
+        if (!$booking) {
+            $_SESSION['error'] = 'Không tìm thấy booking!';
+            header('Location: ?action=bookings');
+            exit;
+        }
 
+        $customers = $this->booking->getAllCustomers();
+        require_once PATH_VIEW . 'booking_edit.php';
+    }
+
+    // Xử lý cập nhật booking
+    public function updateBooking()
+    {
+        if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+            $id = trim($_POST['id']);
+            $customer_name = trim($_POST['customer_name']);
+            $customer_email = trim($_POST['customer_email']);
+            $customer_phone = trim($_POST['customer_phone']);
+            $customer_address = trim($_POST['customer_address'] ?? '');
+            $booking_code = trim($_POST['booking_code']);
+            $booking_date = trim($_POST['booking_date']);
+            $total_amount = trim($_POST['total_amount']);
+            $deposit_amount = trim($_POST['deposit_amount'] ?? 0);
+            $status = trim($_POST['status']);
+            
             // Validate dữ liệu
-            if (empty($user_id) || empty($tour_id) || empty($booking_date) || empty($number_of_people)) {
-                $_SESSION['error_message'] = "Vui lòng điền đầy đủ thông tin bắt buộc!";
-                header("Location: ?action=booking_edit&id=$id");
-                exit();
+            $errors = [];
+            
+            if (empty($customer_name)) {
+                $errors[] = 'Tên khách hàng không được để trống!';
             }
-
-            if ($this->booking->updateBooking($id, $user_id, $tour_id, $booking_date, $number_of_people, $total_price, $notes, $status)) {
-                $_SESSION['success_message'] = "Cập nhật booking thành công!";
+            
+            if (empty($customer_phone)) {
+                $errors[] = 'Số điện thoại không được để trống!';
+            }
+            
+            if (empty($booking_code)) {
+                $errors[] = 'Mã booking không được để trống!';
+            }
+            
+            if (empty($booking_date)) {
+                $errors[] = 'Ngày đặt tour không được để trống!';
+            }
+            
+            if (empty($total_amount) || $total_amount < 0) {
+                $errors[] = 'Tổng tiền phải lớn hơn 0!';
+            }
+            
+            if (empty($status)) {
+                $errors[] = 'Vui lòng chọn trạng thái!';
+            }
+            
+            if (!empty($errors)) {
+                $_SESSION['error_booking'] = implode('<br>', $errors);
+                $_SESSION['old_data'] = $_POST;
+                header('Location: ?action=booking_edit&id=' . $id);
+                exit;
+            }
+            
+            // Tạo data array cho cập nhật
+            $data = [
+                'customer_name' => $customer_name,
+                'customer_email' => $customer_email,
+                'customer_phone' => $customer_phone,
+                'customer_address' => $customer_address,
+                'booking_code' => $booking_code,
+                'booking_date' => $booking_date,
+                'total_amount' => $total_amount,
+                'deposit_amount' => $deposit_amount,
+                'status' => $status
+            ];
+            
+            // Cập nhật booking
+            $result = $this->booking->updateBooking($id, $data);
+            
+            if ($result) {
+                $_SESSION['success'] = 'Cập nhật booking thành công!';
                 header('Location: ?action=bookings');
             } else {
-                $_SESSION['error_message'] = "Có lỗi xảy ra khi cập nhật booking!";
-                header("Location: ?action=booking_edit&id=$id");
+                $_SESSION['error'] = 'Cập nhật booking thất bại!';
+                header('Location: ?action=booking_edit&id=' . $id);
             }
-            exit();
+            exit;
         }
     }
 
-    /**
-     * Xóa booking
-     */
-    public function delete()
+    // Xử lý xóa booking
+    public function booking_delete()
     {
-        if (isset($_GET['id'])) {
-            $id = $_GET['id'];
+        $id = $_GET['id'] ?? 0;
+        
+        if ($id) {
+            $result = $this->booking->deleteBooking($id);
             
-            if ($this->booking->deleteBooking($id)) {
-                $_SESSION['success_message'] = "Xóa booking thành công!";
+            if ($result) {
+                $_SESSION['success'] = 'Xóa booking thành công!';
             } else {
-                $_SESSION['error_message'] = "Có lỗi xảy ra khi xóa booking!";
+                $_SESSION['error'] = 'Xóa booking thất bại!';
             }
-            
-            header('Location: ?action=bookings');
-            exit();
+        } else {
+            $_SESSION['error'] = 'ID booking không hợp lệ!';
         }
+        
+        header('Location: ?action=bookings');
+        exit;
     }
 
-    /**
-     * Hiển thị form gán hướng dẫn viên
-     */
-    public function assign_guide()
+    // Cập nhật trạng thái booking
+    public function updateBookingStatus()
     {
-        if (isset($_GET['id'])) {
-            $id = $_GET['id'];
-            $booking = $this->booking->getBookingById($id);
+        if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+            $id = $_POST['id'] ?? 0;
+            $status = $_POST['status'] ?? '';
             
-            if (!$booking) {
-                $_SESSION['error_message'] = "Booking không tồn tại!";
-                header('Location: ?action=bookings');
-                exit();
-            }
-
-            $guides = $this->booking->getAllGuides();
-            require_once PATH_VIEW . 'booking_assign_guide.php';
-        }
-    }
-
-    /**
-     * Xử lý gán hướng dẫn viên
-     */
-    public function store_assign_guide()
-    {
-        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            $booking_id = $_POST['booking_id'];
-            $guide_id = $_POST['guide_id'];
-
-            if (empty($guide_id)) {
-                $_SESSION['error_message'] = "Vui lòng chọn hướng dẫn viên!";
-                header("Location: ?action=assign_guide&id=$booking_id");
-                exit();
-            }
-
-            if ($this->booking->assignGuide($booking_id, $guide_id)) {
-                $_SESSION['success_message'] = "Gán hướng dẫn viên thành công!";
-                header('Location: ?action=bookings');
+            if ($id && $status) {
+                $result = $this->booking->updateBookingStatus($id, $status);
+                
+                if ($result) {
+                    $_SESSION['success'] = 'Cập nhật trạng thái thành công!';
+                } else {
+                    $_SESSION['error'] = 'Cập nhật trạng thái thất bại!';
+                }
             } else {
-                $_SESSION['error_message'] = "Có lỗi xảy ra khi gán hướng dẫn viên!";
-                header("Location: ?action=assign_guide&id=$booking_id");
+                $_SESSION['error'] = 'Dữ liệu không hợp lệ!';
             }
-            exit();
         }
+        
+        header('Location: ?action=bookings');
+        exit;
     }
 
-    /**
-     * Cập nhật trạng thái booking
-     */
-    public function update_status()
+    // Xử lý booking từ trang tour detail
+    public function bookTour()
     {
-        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            $booking_id = $_POST['booking_id'];
-            $status = $_POST['status'];
-
-            if ($this->booking->updateStatus($booking_id, $status)) {
-                $_SESSION['success_message'] = "Cập nhật trạng thái thành công!";
+        if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+            $tour_id = trim($_POST['tour_id']);
+            $customer_name = trim($_POST['customer_name']);
+            $customer_email = trim($_POST['customer_email']);
+            $customer_phone = trim($_POST['customer_phone']);
+            $number_of_people = trim($_POST['number_of_people']);
+            $booking_date = trim($_POST['booking_date']);
+            $special_requests = trim($_POST['special_requests']);
+            
+            // Validate dữ liệu
+            $errors = [];
+            
+            if (empty($customer_name)) {
+                $errors[] = 'Tên khách hàng không được để trống!';
+            }
+            
+            if (empty($customer_email)) {
+                $errors[] = 'Email không được để trống!';
+            } elseif (!filter_var($customer_email, FILTER_VALIDATE_EMAIL)) {
+                $errors[] = 'Email không hợp lệ!';
+            }
+            
+            if (empty($customer_phone)) {
+                $errors[] = 'Số điện thoại không được để trống!';
+            }
+            
+            if (empty($number_of_people) || $number_of_people < 1) {
+                $errors[] = 'Số lượng người phải lớn hơn 0!';
+            }
+            
+            if (empty($booking_date)) {
+                $errors[] = 'Ngày đặt tour không được để trống!';
+            } elseif (strtotime($booking_date) < strtotime('today')) {
+                $errors[] = 'Ngày đặt tour không được là ngày trong quá khứ!';
+            }
+            
+            if (!empty($errors)) {
+                $_SESSION['error_booking'] = implode('<br>', $errors);
+                $_SESSION['old_data'] = $_POST;
+                header('Location: ?action=tour_detail&id=' . $tour_id);
+                exit;
+            }
+            
+            // Thêm booking
+            $result = $this->booking->addBooking(
+                $tour_id, $customer_name, $customer_email, $customer_phone,
+                $number_of_people, $booking_date, $special_requests, 'pending'
+            );
+            
+            if ($result) {
+                $_SESSION['success'] = 'Đặt tour thành công! Chúng tôi sẽ liên hệ với bạn sớm nhất.';
+                header('Location: ?action=tour_detail&id=' . $tour_id);
             } else {
-                $_SESSION['error_message'] = "Có lỗi xảy ra khi cập nhật trạng thái!";
+                $_SESSION['error'] = 'Đặt tour thất bại! Vui lòng thử lại.';
+                header('Location: ?action=tour_detail&id=' . $tour_id);
             }
-            
-            header('Location: ?action=bookings');
-            exit();
+            exit;
         }
-    }
-
-    /**
-     * Lấy thông tin tour qua Ajax để tính giá
-     */
-    public function get_tour_info()
-    {
-        if (isset($_GET['tour_id'])) {
-            $tour_id = $_GET['tour_id'];
-            $tour = $this->tours->getTourById($tour_id);
-            
-            header('Content-Type: application/json');
-            echo json_encode($tour);
-            exit();
-        }
-    }
-
-    /**
-     * Xuất danh sách booking ra Excel/CSV
-     */
-    public function export()
-    {
-        $bookings = $this->booking->getAllBookings();
-        
-        $filename = "bookings_" . date('Y-m-d') . ".csv";
-        
-        header('Content-Type: text/csv; charset=utf-8');
-        header('Content-Disposition: attachment; filename="' . $filename . '"');
-        
-        $output = fopen('php://output', 'w');
-        
-        // BOM cho UTF-8
-        fprintf($output, chr(0xEF).chr(0xBB).chr(0xBF));
-        
-        // Tiêu đề cột
-        fputcsv($output, [
-            'Mã Booking',
-            'Khách hàng', 
-            'Email',
-            'Tour',
-            'Ngày đặt',
-            'Số người',
-            'Tổng tiền',
-            'HDV',
-            'Trạng thái',
-            'Ngày tạo'
-        ]);
-        
-        // Dữ liệu
-        foreach ($bookings as $booking) {
-            fputcsv($output, [
-                $booking['booking_code'],
-                $booking['user_name'],
-                $booking['user_email'],
-                $booking['tour_name'],
-                $booking['booking_date'],
-                $booking['number_of_people'],
-                number_format($booking['total_price']) . ' VND',
-                $booking['guide_name'] ?? 'Chưa gán',
-                $this->getStatusText($booking['status']),
-                date('d/m/Y H:i', strtotime($booking['created_at']))
-            ]);
-        }
-        
-        fclose($output);
-        exit();
-    }
-
-    /**
-     * Hàm hỗ trợ - Chuyển đổi status thành text tiếng Việt
-     */
-    private function getStatusText($status)
-    {
-        $statusTexts = [
-            'pending' => 'Chờ xử lý',
-            'confirmed' => 'Đã xác nhận',
-            'assigned' => 'Đã gán HDV',
-            'in_progress' => 'Đang thực hiện',
-            'completed' => 'Hoàn thành',
-            'cancelled' => 'Đã hủy'
-        ];
-        
-        return $statusTexts[$status] ?? $status;
     }
 }

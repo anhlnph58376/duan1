@@ -1,5 +1,4 @@
 <?php
-
 class HomeController
 {
     public $tours;
@@ -27,7 +26,7 @@ class HomeController
         }
     }
 
-    // Cập nhật tour
+    // Trong controllers/HomeController.php
     public function updateTour()
     {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
