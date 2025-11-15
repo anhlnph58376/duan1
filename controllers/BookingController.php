@@ -1,6 +1,4 @@
 <?php
-
-// Sao chép controller vào models/ để tương thích autoload
 class BookingController
 {
     protected $booking;

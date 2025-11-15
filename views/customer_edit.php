@@ -1,18 +1,14 @@
-<?php if (isset($_SESSION['error_tour_code'])): ?>
+<?php if (isset($_SESSION['error_phone'])): ?>
     <div class="alert alert-danger mb-4" role="alert">
-        <?= $_SESSION['error_tour_code'] ?>
+        <?= $_SESSION['error_phone'] ?>
     </div>
 <?php
     // Xóa session lỗi ngay sau khi hiển thị
-    unset($_SESSION['error_tour_code']);
+    unset($_SESSION['error_phone']);
 endif;
-
-// Lấy dữ liệu cũ (nếu có)
-$old_data = $_SESSION['old_data'] ?? [];
-unset($_SESSION['old_data']); // Xóa sau khi lấy ra
 ?>
 <!DOCTYPE html>
-<html lang="en">
+<html lang="vi">
 
 <head>
 
@@ -40,7 +36,95 @@ unset($_SESSION['old_data']); // Xóa sau khi lấy ra
     <!-- Page Wrapper -->
     <div id="wrapper">
 
-        <?php include 'views/includes/sidebar.php'; ?>
+        <!-- Sidebar -->
+        <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
+
+            <!-- Sidebar - Brand -->
+            <a class="sidebar-brand d-flex align-items-center justify-content-center" href="<?= BASE_URL ?>">
+                <div class="sidebar-brand-icon rotate-n-15">
+                    <i class="fas fa-laugh-wink"></i>
+                </div>
+                <div class="sidebar-brand-text mx-3">SB Admin <sup>2</sup></div>
+            </a>
+
+            <!-- Divider -->
+            <hr class="sidebar-divider my-0">
+
+            <!-- Nav Item - Dashboard -->
+            <li class="nav-item active">
+                <a class="nav-link" href="<?= BASE_URL ?>">
+                    <i class="fas fa-fw fa-tachometer-alt"></i>
+                    <span>Dashboard</span></a>
+            </li>
+
+            <!-- Divider -->
+            <hr class="sidebar-divider">
+
+            <!-- Nav Item-->
+            <li class="nav-item">
+                <a class="nav-link" href="?action=tours">
+                    <span>Quản lý tour</span>
+                </a>
+            </li>
+
+            <hr class="sidebar-divider">
+
+            <li class="nav-item">
+                <a class="nav-link" href="?action=bookings">
+                    <span>Quản lý booking</span>
+                </a>
+            </li>
+
+            <hr class="sidebar-divider">
+
+            <li class="nav-item">
+                <a class="nav-link" href="#">
+                    <span>Booking assignment</span>
+                </a>
+            </li>
+
+            <hr class="sidebar-divider">
+
+            <li class="nav-item active">
+                <a class="nav-link" href="?action=customers">
+                    <span>Quản lý khách hàng</span>
+                </a>
+            </li>
+
+            <hr class="sidebar-divider">
+
+            <li class="nav-item">
+                <a class="nav-link" href="#">
+                    <span>Quản lý đoàn</span>
+                </a>
+            </li>
+
+            <hr class="sidebar-divider">
+
+            <li class="nav-item">
+                <a class="nav-link" href="#">
+                    <span>Quản lý hưỡng dẫn viên</span>
+                </a>
+            </li>
+
+            <hr class="sidebar-divider">
+
+            <li class="nav-item">
+                <a class="nav-link" href="#">
+                    <span>Quản lý tài khoản</span>
+                </a>
+            </li>
+
+
+            <!-- Divider -->
+            <hr class="sidebar-divider d-none d-md-block">
+
+            <!-- Sidebar Toggler (Sidebar) -->
+            <div class="text-center d-none d-md-inline">
+                <button class="rounded-circle border-0" id="sidebarToggle"></button>
+            </div>
+        </ul>
+
         <!-- Content Wrapper -->
         <div id="content-wrapper" class="d-flex flex-column">
 
@@ -154,62 +238,44 @@ unset($_SESSION['old_data']); // Xóa sau khi lấy ra
             <!-- End of Main Content -->
             <div class="container-fluid">
                 <div class="d-sm-flex align-items-center justify-content-between mb-4">
-                    <h1 class="h3 mb-0 text-gray-800">Quản lý tour</h1>
+                    <h1 class="h3 mb-0 text-gray-800">Quản lý khách hàng</h1>
                 </div>
 
                 <div class="card shadow mb-4">
                     <div class="card-header py-3">
-                        <h6 class="m-0 font-weight-bold text-primary">Thêm tour</h6>
+                        <h6 class="m-0 font-weight-bold text-primary">Chỉnh sửa khách hàng</h6>
                     </div>
                     <div class="card-body">
-                        <form action="?action=addTour" method="POST" enctype="multipart/form-data">
+                        <form action="?action=updateCustomer" method="POST">
+                            <input type="hidden" name="id" value="<?= $customer['id'] ?>">
                             <div class="mb-3">
-                                <label for="tour_code" class="form-label">Tour code:</label>
-                                <input type="text" class="form-control" id="tour_code" name="tour_code" required>
+                                <label for="name" class="form-label">Tên khách hàng:</label>
+                                <input type="text" class="form-control" id="name" name="name" value="<?= $customer['name'] ?>" required>
                             </div>
 
                             <div class="mb-3">
-                                <label for="name" class="form-label">Tên Tour:</label>
-                                <input type="text" class="form-control" id="name" name="name" required>
+                                <label for="phone" class="form-label">Số điện thoại:</label>
+                                <input type="text" class="form-control" id="phone" name="phone" value="<?= $customer['phone'] ?>" required>
                             </div>
 
                             <div class="mb-3">
-                                <label for="duration" class="form-label">Thời lượng:</label>
-                                <input type="text" class="form-control" id="duration" name="duration" required>
+                                <label for="email" class="form-label">Email:</label>
+                                <input type="email" class="form-control" id="email" name="email" value="<?= $customer['email'] ?? '' ?>">
                             </div>
 
                             <div class="mb-3">
-                                <label for="base_price" class="form-label">Giá:</label>
-                                <input type="text" class="form-control" id="base_price" name="base_price" required>
+                                <label for="address" class="form-label">Địa chỉ:</label>
+                                <textarea class="form-control" id="address" name="address" rows="3"><?= $customer['address'] ?? '' ?></textarea>
                             </div>
 
                             <div class="mb-3">
-                                <label for="image" class="form-label">Hình ảnh:</label>
-                                <input type="file" class="form-control" id="image" name="image" required>
-                            </div>
-
-                            <div class="mb-3">
-                                <label class="form-label d-block">Loại Tour:</label>
-
-                                <div class="form-check form-check-inline">
-                                    <input class="form-check-input" type="radio" name="is_international" id="tourNoiDia" value="0" checked>
-                                    <label class="form-check-label" for="tourNoiDia">Nội địa</label>
-                                </div>
-
-                                <div class="form-check form-check-inline">
-                                    <input class="form-check-input" type="radio" name="is_international" id="tourQuocTe" value="1">
-                                    <label class="form-check-label" for="tourQuocTe">Quốc tế</label>
-                                </div>
-                            </div>
-
-                            <div class="mb-3">
-                                <label for="description" class="form-label">Mô tả:</label>
-                                <input type="text" class="form-control" id="description" name="description" required>
+                                <label for="history_notes" class="form-label">Ghi chú lịch sử:</label>
+                                <textarea class="form-control" id="history_notes" name="history_notes" rows="4"><?= $customer['history_notes'] ?? '' ?></textarea>
                             </div>
 
                             <div class="d-flex justify-content-end">
-                                <a href="tours.php" class="btn btn-secondary me-2">Hủy bỏ</a>
-                                <button type="submit" class="btn btn-primary">Thêm Tour</button>
+                                <a href="?action=customers" class="btn btn-secondary me-2">Hủy bỏ</a>
+                                <button type="submit" class="btn btn-primary">Cập nhật khách hàng</button>
                             </div>
                         </form>
                     </div>

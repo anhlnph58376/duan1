@@ -5,6 +5,7 @@ $action = $_GET['action'] ?? '/';
 $homeController = new HomeController;
 $bookingController = new BookingController;
 $departureController = new DepartureController;
+$customerController = new CustomerController;
 
 match ($action) {
     '/'         => $homeController->index(),
@@ -16,6 +17,16 @@ match ($action) {
     'tour_delete'    => $homeController->tour_delete(),
     'tour_detail'    => $homeController->tour_detail(),
     
+
+    // Customer routes
+    'customers'         => $customerController->index(),
+    'customer_edit'     => $customerController->customer_edit(),
+    'updateCustomer'    => $customerController->updateCustomer(),
+    'customer_add'      => $customerController->customer_add(),
+    'addCustomer'       => $customerController->addCustomer(),
+    'customer_delete'   => $customerController->customer_delete(),
+    'customer_detail'   => $customerController->customer_detail(),
+
     // Các đường dẫn Booking
     'bookings'          => $bookingController->bookings(),
     'booking_detail'    => $bookingController->booking_detail(),

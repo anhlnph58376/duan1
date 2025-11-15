@@ -60,7 +60,6 @@ $data = !empty($old_data) ? $old_data : $booking;
 
                     <!-- Topbar Navbar -->
                     <ul class="navbar-nav ml-auto">
-
                         <!-- Nav Item - User Information -->
                         <li class="nav-item dropdown no-arrow">
                             <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button"
@@ -70,7 +69,6 @@ $data = !empty($old_data) ? $old_data : $booking;
                                     src="assets/img/undraw_profile.svg">
                             </a>
                         </li>
-
                     </ul>
 
                 </nav>

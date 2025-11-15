@@ -1,15 +1,15 @@
 <?php if (isset($_SESSION['error'])): ?>
-<div class="alert alert-danger mb-4" role="alert">
-    <?= $_SESSION['error'] ?>
-</div>
+    <div class="alert alert-danger mb-4" role="alert">
+        <?= $_SESSION['error'] ?>
+    </div>
 <?php
     unset($_SESSION['error']);
 endif;
 
 if (isset($_SESSION['success'])): ?>
-<div class="alert alert-success mb-4" role="alert">
-    <?= $_SESSION['success'] ?>
-</div>
+    <div class="alert alert-success mb-4" role="alert">
+        <?= $_SESSION['success'] ?>
+    </div>
 <?php
     unset($_SESSION['success']);
 endif;
@@ -134,30 +134,30 @@ endif;
                                     </thead>
                                     <tbody>
                                         <?php if (isset($bookings) && !empty($bookings)): ?>
-                                        <?php foreach ($bookings as $booking): ?>
-                                        <tr>
-                                            <td><?= $booking['id'] ?></td>
-                                            <td>
-                                                <strong>Mã: <?= htmlspecialchars($booking['booking_code'] ?? 'N/A') ?></strong><br>
-                                                <small class="text-muted"><?= date('d/m/Y H:i', strtotime($booking['booking_date'])) ?></small>
-                                            </td>
-                                            <td><?= htmlspecialchars($booking['customer_name'] ?? 'N/A') ?></td>
-                                            <td><?= htmlspecialchars($booking['customer_email'] ?? 'N/A') ?></td>
-                                            <td><?= htmlspecialchars($booking['customer_phone'] ?? 'N/A') ?></td>
-                                            <td><?= number_format($booking['deposit_amount'] ?? 0, 0, ',', '.') ?> VNĐ</td>
-                                            <td>
-                                                <?php
-                                                        $status_class = match($booking['status']) {
+                                            <?php foreach ($bookings as $booking): ?>
+                                                <tr>
+                                                    <td><?= $booking['id'] ?></td>
+                                                    <td>
+                                                        <strong>Mã: <?= htmlspecialchars($booking['booking_code'] ?? 'N/A') ?></strong><br>
+                                                        <small class="text-muted"><?= date('d/m/Y H:i', strtotime($booking['booking_date'])) ?></small>
+                                                    </td>
+                                                    <td><?= htmlspecialchars($booking['customer_name'] ?? 'N/A') ?></td>
+                                                    <td><?= htmlspecialchars($booking['customer_email'] ?? 'N/A') ?></td>
+                                                    <td><?= htmlspecialchars($booking['customer_phone'] ?? 'N/A') ?></td>
+                                                    <td><?= number_format($booking['deposit_amount'] ?? 0, 0, ',', '.') ?> VNĐ</td>
+                                                    <td>
+                                                        <?php
+                                                        $status_class = match ($booking['status']) {
                                                             'Pending' => 'badge-warning',
-                                                            'Deposited' => 'badge-info', 
+                                                            'Deposited' => 'badge-info',
                                                             'Completed' => 'badge-success',
                                                             'Canceled' => 'badge-danger',
                                                             default => 'badge-secondary'
                                                         };
-                                                        $status_text = match($booking['status']) {
+                                                        $status_text = match ($booking['status']) {
                                                             'Pending' => 'Chờ xác nhận',
                                                             'Deposited' => 'Đã cọc',
-                                                            'Completed' => 'Hoàn thành', 
+                                                            'Completed' => 'Hoàn thành',
                                                             'Canceled' => 'Đã hủy',
                                                             default => 'Không xác định'
                                                         };
@@ -211,62 +211,62 @@ endif;
                                                     </a>
                                                 </div>
 
-                                                <!-- Quick status update -->
-                                                <div class="dropdown mt-1">
-                                                    <button class="btn btn-sm btn-secondary dropdown-toggle"
-                                                        type="button" data-toggle="dropdown" aria-expanded="false">
-                                                        Cập nhật
-                                                    </button>
-                                                    <ul class="dropdown-menu">
-                                                        <li>
-                                                            <form method="POST" action="?action=updateBookingStatus"
-                                                                style="margin: 0;">
-                                                                <input type="hidden" name="id"
-                                                                    value="<?= $booking['id'] ?>">
-                                                                <input type="hidden" name="status" value="pending">
-                                                                <button type="submit" class="dropdown-item">Đang
-                                                                    chờ</button>
-                                                            </form>
-                                                        </li>
-                                                        <li>
-                                                            <form method="POST" action="?action=updateBookingStatus"
-                                                                style="margin: 0;">
-                                                                <input type="hidden" name="id"
-                                                                    value="<?= $booking['id'] ?>">
-                                                                <input type="hidden" name="status" value="confirmed">
-                                                                <button type="submit" class="dropdown-item">Đã xác
-                                                                    nhận</button>
-                                                            </form>
-                                                        </li>
-                                                        <li>
-                                                            <form method="POST" action="?action=updateBookingStatus"
-                                                                style="margin: 0;">
-                                                                <input type="hidden" name="id"
-                                                                    value="<?= $booking['id'] ?>">
-                                                                <input type="hidden" name="status" value="completed">
-                                                                <button type="submit" class="dropdown-item">Đã hoàn
-                                                                    thành</button>
-                                                            </form>
-                                                        </li>
-                                                        <li>
-                                                            <form method="POST" action="?action=updateBookingStatus"
-                                                                style="margin: 0;">
-                                                                <input type="hidden" name="id"
-                                                                    value="<?= $booking['id'] ?>">
-                                                                <input type="hidden" name="status" value="cancelled">
-                                                                <button type="submit" class="dropdown-item">Đã
-                                                                    hủy</button>
-                                                            </form>
-                                                        </li>
-                                                    </ul>
-                                                </div>
-                                            </td>
-                                        </tr>
-                                        <?php endforeach; ?>
+                                                        <!-- Quick status update -->
+                                                        <div class="dropdown mt-1">
+                                                            <button class="btn btn-sm btn-secondary dropdown-toggle"
+                                                                type="button" data-toggle="dropdown" aria-expanded="false">
+                                                                Cập nhật
+                                                            </button>
+                                                            <ul class="dropdown-menu">
+                                                                <li>
+                                                                    <form method="POST" action="?action=updateBookingStatus"
+                                                                        style="margin: 0;">
+                                                                        <input type="hidden" name="id"
+                                                                            value="<?= $booking['id'] ?>">
+                                                                        <input type="hidden" name="status" value="pending">
+                                                                        <button type="submit" class="dropdown-item">Đang
+                                                                            chờ</button>
+                                                                    </form>
+                                                                </li>
+                                                                <li>
+                                                                    <form method="POST" action="?action=updateBookingStatus"
+                                                                        style="margin: 0;">
+                                                                        <input type="hidden" name="id"
+                                                                            value="<?= $booking['id'] ?>">
+                                                                        <input type="hidden" name="status" value="confirmed">
+                                                                        <button type="submit" class="dropdown-item">Đã xác
+                                                                            nhận</button>
+                                                                    </form>
+                                                                </li>
+                                                                <li>
+                                                                    <form method="POST" action="?action=updateBookingStatus"
+                                                                        style="margin: 0;">
+                                                                        <input type="hidden" name="id"
+                                                                            value="<?= $booking['id'] ?>">
+                                                                        <input type="hidden" name="status" value="completed">
+                                                                        <button type="submit" class="dropdown-item">Đã hoàn
+                                                                            thành</button>
+                                                                    </form>
+                                                                </li>
+                                                                <li>
+                                                                    <form method="POST" action="?action=updateBookingStatus"
+                                                                        style="margin: 0;">
+                                                                        <input type="hidden" name="id"
+                                                                            value="<?= $booking['id'] ?>">
+                                                                        <input type="hidden" name="status" value="cancelled">
+                                                                        <button type="submit" class="dropdown-item">Đã
+                                                                            hủy</button>
+                                                                    </form>
+                                                                </li>
+                                                            </ul>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                            <?php endforeach; ?>
                                         <?php else: ?>
-                                        <tr>
-                                            <td colspan="10" class="text-center">Không có booking nào</td>
-                                        </tr>
+                                            <tr>
+                                                <td colspan="10" class="text-center">Không có booking nào</td>
+                                            </tr>
                                         <?php endif; ?>
                                     </tbody>
                                 </table>

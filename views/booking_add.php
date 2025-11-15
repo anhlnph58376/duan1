@@ -82,7 +82,6 @@ endif;
                                     src="assets/img/undraw_profile.svg">
                             </a>
                         </li>
-
                     </ul>
 
                 </nav>
@@ -182,8 +181,8 @@ endif;
                                             <div class="col-md-6">
                                                 <div class="form-group">
                                                     <label for="total_amount">Tổng tiền <span class="text-danger">*</span></label>
-                                                    <input type="number" class="form-control" id="total_amount" name="total_amount" 
-                                                           min="0" step="1000" required
+                                                    <input type="text" class="form-control" id="total_amount" name="total_amount" 
+                                                            required
                                                            value="<?= $data['total_amount'] ?? '' ?>"
                                                            placeholder="0">
                                                 </div>
@@ -191,8 +190,7 @@ endif;
                                             <div class="col-md-6">
                                                 <div class="form-group">
                                                     <label for="deposit_amount">Tiền cọc</label>
-                                                    <input type="number" class="form-control" id="deposit_amount" name="deposit_amount" 
-                                                           min="0" step="1000"
+                                                    <input type="text" class="form-control" id="deposit_amount" name="deposit_amount"
                                                            value="<?= $data['deposit_amount'] ?? '0' ?>"
                                                            placeholder="0">
                                                 </div>
