@@ -31,17 +31,17 @@
         </a>
     </li>
 
-    <!-- Nav Item - Đặt Tour -->
-    <li class="nav-item <?= (isset($_GET['action']) && in_array($_GET['action'], ['dat_tour', 'dat_tour_chi_tiet', 'dat_tour_them', 'dat_tour_sua', 'dat_tour_tao_doan_moi'])) ? 'active' : '' ?>">
-        <a class="nav-link" href="index.php?action=dat_tour">
+    <!-- Nav Item - Bookings -->
+    <li class="nav-item <?= (isset($_GET['action']) && in_array($_GET['action'], ['bookings', 'booking_detail', 'booking_add', 'booking_edit', 'booking_create_new_departure'])) ? 'active' : '' ?>">
+        <a class="nav-link" href="index.php?action=bookings">
             <i class="fas fa-fw fa-calendar-check"></i>
-            <span>Quản Lý Đặt Tour</span>
+            <span>Quản Lý Booking</span>
         </a>
     </li>
 
-    <!-- Nav Item - Đoàn -->
-    <li class="nav-item <?= (isset($_GET['action']) && in_array($_GET['action'], ['doan', 'doan_chi_tiet', 'doan_them', 'doan_sua', 'doan_tao_booking_moi'])) ? 'active' : '' ?>">
-        <a class="nav-link" href="index.php?action=doan">
+    <!-- Nav Item - Departures -->
+    <li class="nav-item <?= (isset($_GET['action']) && in_array($_GET['action'], ['departures', 'departure_detail', 'departure_add', 'departure_edit', 'departure_create_new_booking'])) ? 'active' : '' ?>">
+        <a class="nav-link" href="index.php?action=departures">
             <i class="fas fa-fw fa-plane-departure"></i>
             <span>Quản Lý Đoàn</span>
         </a>
@@ -50,9 +50,9 @@
     <!-- Divider -->
     <hr class="sidebar-divider">
 
-    <!-- Nav Item - Customers (Placeholder) -->
-    <li class="nav-item">
-        <a class="nav-link" href="#" onclick="return false;" style="opacity: 0.6;">
+    <!-- Nav Item - Customers -->
+    <li class="nav-item <?= (isset($_GET['action']) && in_array($_GET['action'], ['customers', 'customer_detail', 'customer_add', 'customer_edit'])) ? 'active' : '' ?>">
+        <a class="nav-link" href="index.php?action=customers">
             <i class="fas fa-fw fa-users"></i>
             <span>Quản Lý Khách Hàng</span>
         </a>

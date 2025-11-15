@@ -3,8 +3,8 @@
 $action = $_GET['action'] ?? '/';
 
 $homeController = new HomeController;
-$datTourController = new DatTourController;
-$doanController = new DoanController;
+$bookingController = new BookingController;
+$departureController = new DepartureController;
 $customerController = new CustomerController;
 
 match ($action) {
@@ -27,30 +27,30 @@ match ($action) {
     'customer_delete'   => $customerController->customer_delete(),
     'customer_detail'   => $customerController->customer_detail(),
 
-    // Các đường dẫn Đặt Tour
-    'dat_tour'          => $datTourController->dat_tour(),
-    'dat_tour_chi_tiet' => $datTourController->dat_tour_chi_tiet(),
-    'dat_tour_them'     => $datTourController->dat_tour_them(),
-    'themDatTour'       => $datTourController->themDatTour(),
-    'dat_tour_sua'      => $datTourController->dat_tour_sua(),
-    'capNhatDatTour'    => $datTourController->capNhatDatTour(),
-    'dat_tour_xoa'      => $datTourController->dat_tour_xoa(),
-    'capNhatTrangThaiDatTour' => $datTourController->capNhatTrangThaiDatTour(),
-    'datTourTuChiTiet'  => $datTourController->datTourTuChiTiet(),
-    'dat_tour_them_vao_doan' => $datTourController->addBookingToDeparture(),
-    'dat_tour_tao_doan_moi' => $datTourController->taoDoanMoi(),
-    'xu_ly_tao_doan_moi' => $datTourController->xuLyTaoDoanMoi(),
+    // Các đường dẫn Booking
+    'bookings'          => $bookingController->bookings(),
+    'booking_detail'    => $bookingController->booking_detail(),
+    'booking_add'       => $bookingController->booking_add(),
+    'addBooking'        => $bookingController->addBooking(),
+    'booking_edit'      => $bookingController->booking_edit(),
+    'updateBooking'     => $bookingController->updateBooking(),
+    'booking_delete'    => $bookingController->booking_delete(),
+    'updateBookingStatus' => $bookingController->updateBookingStatus(),
+    'bookTour'          => $bookingController->bookTour(),
+    'booking_add_to_departure' => $bookingController->addBookingToDeparture(),
+    'booking_create_new_departure' => $bookingController->createNewDeparture(),
+    'booking_process_new_departure' => $bookingController->processNewDeparture(),
 
-    // Các đường dẫn Quản lý đoàn
-    'doan'               => $doanController->index(),
-    'doan_chi_tiet'      => $doanController->detail(),
-    'doan_them'          => $doanController->add(),
-    'doan_tao'           => $doanController->create(),
-    'doan_sua'           => $doanController->edit(),
-    'doan_cap_nhat'      => $doanController->update(),
-    'doan_xoa'           => $doanController->delete(),
-    'doan_them_booking_co_san' => $doanController->addExistingBookingToDeparture(),
-    'doan_tao_booking_moi' => $doanController->createNewBooking(),
-    'doan_xu_ly_booking_moi' => $doanController->processNewBooking(),
+    // Các đường dẫn Departure (Quản lý đoàn)
+    'departures'          => $departureController->index(),
+    'departure_detail'    => $departureController->detail(),
+    'departure_add'       => $departureController->add(),
+    'departure_create'    => $departureController->create(),
+    'departure_edit'      => $departureController->edit(),
+    'departure_update'    => $departureController->update(),
+    'departure_delete'    => $departureController->delete(),
+    'departure_add_existing_booking' => $departureController->addExistingBookingToDeparture(),
+    'departure_create_new_booking' => $departureController->createNewBooking(),
+    'departure_process_new_booking' => $departureController->processNewBooking(),
 };
 ?>
