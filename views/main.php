@@ -101,7 +101,7 @@
             <hr class="sidebar-divider">
 
             <li class="nav-item active">
-                <a class="nav-link" href="#">
+                <a class="nav-link" href="?action=accounts">
                     <span>Quản lý tài khoản</span>
                 </a>
             </li>

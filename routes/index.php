@@ -32,4 +32,6 @@ match ($action) {
     'update_status'    => $bookingController->update_status(),
     'booking_export'   => $bookingController->export(),
     'get_tour_info'    => $bookingController->get_tour_info(),
+
+    // account routes
 };
