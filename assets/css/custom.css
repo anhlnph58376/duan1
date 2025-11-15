@@ -1,0 +1,149 @@
+/* Custom CSS for sticky sidebar and enhanced UI */
+
+
+/* Sticky Sidebar */
+
+.sticky-sidebar {
+    position: fixed !important;
+    top: 0;
+    left: 0;
+    height: 100vh;
+    overflow-y: auto;
+    overflow-x: hidden;
+    z-index: 1000;
+    transition: transform 0.3s ease-in-out;
+}
+
+
+/* Smooth scrolling for sidebar */
+
+.sticky-sidebar::-webkit-scrollbar {
+    width: 6px;
+}
+
+.sticky-sidebar::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.sticky-sidebar::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.3);
+    border-radius: 3px;
+}
+
+.sticky-sidebar::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 255, 255, 0.5);
+}
+
+
+/* Content wrapper adjustment for sticky sidebar */
+
+body.sidebar-toggled .sticky-sidebar {
+    transform: translateX(-224px);
+}
+
+
+/* Main content adjustment */
+
+#content-wrapper {
+    margin-left: 224px;
+    transition: margin-left 0.3s ease-in-out;
+}
+
+body.sidebar-toggled #content-wrapper {
+    margin-left: 0;
+}
+
+
+/* Mobile responsive */
+
+@media (max-width: 768px) {
+    .sticky-sidebar {
+        transform: translateX(-224px);
+    }
+    .sticky-sidebar.show {
+        transform: translateX(0);
+    }
+    #content-wrapper {
+        margin-left: 0;
+    }
+}
+
+
+/* Enhanced sidebar animations */
+
+.sticky-sidebar .nav-link {
+    transition: all 0.3s ease;
+    border-radius: 0.35rem;
+    margin: 0 0.5rem;
+    padding: 0.75rem 1rem;
+}
+
+.sticky-sidebar .nav-link:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+    transform: translateX(3px);
+}
+
+.sticky-sidebar .nav-item.active .nav-link {
+    background-color: rgba(255, 255, 255, 0.2);
+    box-shadow: 0 0 10px rgba(255, 255, 255, 0.1);
+}
+
+
+/* Sidebar brand enhancement */
+
+.sticky-sidebar .sidebar-brand {
+    padding: 1.5rem 0;
+    transition: all 0.3s ease;
+}
+
+.sticky-sidebar .sidebar-brand:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+
+/* Divider styling */
+
+.sticky-sidebar .sidebar-divider {
+    border-color: rgba(255, 255, 255, 0.2);
+    margin: 0.5rem 1rem;
+}
+
+
+/* Toggle button enhancement */
+
+#sidebarToggle,
+#sidebarToggleTop {
+    transition: all 0.3s ease;
+}
+
+#sidebarToggle:hover,
+#sidebarToggleTop:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+    transform: scale(1.1);
+}
+
+
+/* Content area padding for better spacing */
+
+.container-fluid {
+    padding-top: 1rem;
+}
+
+
+/* Enhanced card animations when sidebar is present */
+
+.card {
+    transition: all 0.3s ease;
+}
+
+.card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+}
+
+
+/* Smooth transitions for all interactive elements */
+
+* {
+    transition: all 0.2s ease;
+}

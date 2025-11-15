@@ -10,6 +10,14 @@ class Tours extends BaseModel
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
+    function getAllTours()
+    {
+        $sql = "SELECT * FROM tours";
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
     function getTourById($id)
     {
         $sql = "SELECT * FROM tours WHERE id = :id";
