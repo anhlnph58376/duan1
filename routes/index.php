@@ -7,10 +7,7 @@ $bookingController = new BookingController;
 $customerController = new CustomerController;
 
 match ($action) {
-    // Home routes
     '/'         => $homeController->index(),
-    
-    // Tour routes
     'tours'    => $homeController->tours(),
     'tour_edit'    => $homeController->tour_edit(),
     'updateTour'    => $homeController->updateTour(),
@@ -19,20 +16,6 @@ match ($action) {
     'tour_delete'    => $homeController->tour_delete(),
     'tour_detail'    => $homeController->tour_detail(),
     
-    // Booking routes
-    'bookings'         => $bookingController->index(),
-    'booking_search'   => $bookingController->search(),
-    'booking_add'      => $bookingController->add(),
-    'booking_store'    => $bookingController->store(),
-    'booking_detail'   => $bookingController->detail(),
-    'booking_edit'     => $bookingController->edit(),
-    'booking_update'   => $bookingController->update(),
-    'booking_delete'   => $bookingController->delete(),
-    'assign_guide'     => $bookingController->assign_guide(),
-    'store_assign_guide' => $bookingController->store_assign_guide(),
-    'update_status'    => $bookingController->update_status(),
-    'booking_export'   => $bookingController->export(),
-    'get_tour_info'    => $bookingController->get_tour_info(),
 
     // Customer routes
     'customers'         => $customerController->index(),
@@ -42,4 +25,15 @@ match ($action) {
     'addCustomer'       => $customerController->addCustomer(),
     'customer_delete'   => $customerController->customer_delete(),
     'customer_detail'   => $customerController->customer_detail(),
+
+    // Các đường dẫn Booking
+    'bookings'          => $bookingController->bookings(),
+    'booking_detail'    => $bookingController->booking_detail(),
+    'booking_add'       => $bookingController->booking_add(),
+    'addBooking'        => $bookingController->addBooking(),
+    'booking_edit'      => $bookingController->booking_edit(),
+    'updateBooking'     => $bookingController->updateBooking(),
+    'booking_delete'    => $bookingController->booking_delete(),
+    'updateBookingStatus' => $bookingController->updateBookingStatus(),
+    'bookTour'          => $bookingController->bookTour(),
 };

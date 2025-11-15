@@ -1,7 +1,7 @@
 <?php if (isset($_SESSION['error_tour_code'])): ?>
-    <div class="alert alert-danger mb-4" role="alert">
-        <?= $_SESSION['error_tour_code'] ?>
-    </div>
+<div class="alert alert-danger mb-4" role="alert">
+    <?= $_SESSION['error_tour_code'] ?>
+</div>
 <?php
     // Xóa session lỗi ngay sau khi hiển thị
     unset($_SESSION['error_tour_code']);
@@ -12,7 +12,7 @@ $old_data = $_SESSION['old_data'] ?? [];
 unset($_SESSION['old_data']); // Xóa sau khi lấy ra
 ?>
 <!DOCTYPE html>
-<html lang="vi">
+<html lang="en">
 
 <head>
 
@@ -73,16 +73,15 @@ unset($_SESSION['old_data']); // Xóa sau khi lấy ra
 
             <hr class="sidebar-divider">
 
-            <li class="nav-item active">
-                <a class="nav-link" href="#">
+            <li class="nav-item">
+                <a class="nav-link" href="?action=bookings">
                     <span>Quản lý booking</span>
                 </a>
             </li>
 
             <hr class="sidebar-divider">
 
-            <li class="nav-item active">
-                <a class="nav-link" href="#">
+            <li class="nav-item">
                     <span>Booking assignment</span>
                 </a>
             </li>
@@ -207,8 +206,7 @@ unset($_SESSION['old_data']); // Xóa sau khi lấy ra
                             <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button"
                                 data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                 <span class="mr-2 d-none d-lg-inline text-gray-600 small">Douglas McGee</span>
-                                <img class="img-profile rounded-circle"
-                                    src="assets/img/undraw_profile.svg">
+                                <img class="img-profile rounded-circle" src="assets/img/undraw_profile.svg">
                             </a>
                             <!-- Dropdown - User Information -->
                             <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in"
@@ -251,9 +249,9 @@ unset($_SESSION['old_data']); // Xóa sau khi lấy ra
                     </div>
                     <div class="card-body">
                         <?php
-                        // Biến $tour chứa dữ liệu chi tiết tour
+                        // Giả định biến $tour chứa dữ liệu chi tiết tour
                         // Ví dụ: $tour = ['id' => 1, 'name' => 'Tour Vịnh Hạ Long', 'tour_code' => 'HL001', ...];
-                        // BASE_URL đã được định nghĩa
+                        // Giả định BASE_URL đã được định nghĩa
                         $base_url = defined('BASE_URL') ? BASE_URL : '/';
 
                         // Kiểm tra và thoát nếu không có dữ liệu tour
@@ -273,7 +271,8 @@ unset($_SESSION['old_data']); // Xóa sau khi lấy ra
                             <div class="card shadow mb-4">
                                 <div class="card-header py-3">
                                     <h1 class="h3 mb-0 text-gray-800">
-                                        <i class="fas fa-info-circle"></i> Chi tiết Tour: <?= htmlspecialchars($tour['name']) ?>
+                                        <i class="fas fa-info-circle"></i> Chi tiết Tour:
+                                        <?= htmlspecialchars($tour['name']) ?>
                                     </h1>
                                 </div>
 
@@ -282,12 +281,13 @@ unset($_SESSION['old_data']); // Xóa sau khi lấy ra
                                         <div class="col-lg-4 mb-4">
                                             <h5 class="text-primary mb-3">Hình ảnh Tour</h5>
                                             <?php if (!empty($tour['image'])): ?>
-                                                <img src="<?= $tour['image'] ?>"
-                                                    alt="<?= htmlspecialchars($tour['name']) ?>"
-                                                    class="img-fluid rounded shadow-sm"
-                                                    style="max-height: 400px; width: 100%; object-fit: cover;">
+                                            <img src="<?= $tour['image'] ?>"
+                                                alt="<?= htmlspecialchars($tour['name']) ?>"
+                                                class="img-fluid rounded shadow-sm"
+                                                style="max-height: 400px; width: 100%; object-fit: cover;">
                                             <?php else: ?>
-                                                <div class="border p-4 text-center text-muted rounded">Không có hình ảnh</div>
+                                            <div class="border p-4 text-center text-muted rounded">Không có hình ảnh
+                                            </div>
                                             <?php endif; ?>
                                         </div>
 
@@ -296,7 +296,8 @@ unset($_SESSION['old_data']); // Xóa sau khi lấy ra
                                             <ul class="list-group list-group-flush mb-4">
                                                 <li class="list-group-item">
                                                     <strong>Mã Tour:</strong>
-                                                    <span class="badge bg-info text-dark"><?= htmlspecialchars($tour['tour_code']) ?></span>
+                                                    <span
+                                                        class="badge bg-info text-dark"><?= htmlspecialchars($tour['tour_code']) ?></span>
                                                 </li>
                                                 <li class="list-group-item">
                                                     <strong>Tên Tour:</strong>
@@ -304,7 +305,8 @@ unset($_SESSION['old_data']); // Xóa sau khi lấy ra
                                                 </li>
                                                 <li class="list-group-item">
                                                     <strong>Loại Tour:</strong>
-                                                    <span class="badge <?= $tour['is_international'] == 1 ? 'bg-warning text-dark' : 'bg-success text-white' ?>">
+                                                    <span
+                                                        class="badge <?= $tour['is_international'] == 1 ? 'bg-warning text-dark' : 'bg-success text-white' ?>">
                                                         <?= $tour['is_international'] == 1 ? 'Quốc tế' : 'Nội địa' ?>
                                                     </span>
                                                 </li>
@@ -323,6 +325,190 @@ unset($_SESSION['old_data']); // Xóa sau khi lấy ra
                                             <h5 class="text-primary mt-4 mb-3">Mô tả Chi tiết</h5>
                                             <div class="p-3 bg-light rounded border">
                                                 <?= nl2br(htmlspecialchars($tour['description'])) ?>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <hr class="my-4">
+
+                                    <!-- Booking Form Section -->
+                                    <div class="row">
+                                        <div class="col-md-8">
+                                            <div class="card shadow mb-4">
+                                                <div class="card-header py-3">
+                                                    <h6 class="m-0 font-weight-bold text-success">
+                                                        <i class="fas fa-calendar-check"></i> Đặt Tour Ngay
+                                                    </h6>
+                                                </div>
+                                                <div class="card-body">
+                                                    <?php if (isset($_SESSION['error_booking'])): ?>
+                                                    <div class="alert alert-danger mb-4" role="alert">
+                                                        <?= $_SESSION['error_booking'] ?>
+                                                    </div>
+                                                    <?php
+                                                        unset($_SESSION['error_booking']);
+                                                    endif;
+
+                                                    if (isset($_SESSION['success'])): ?>
+                                                    <div class="alert alert-success mb-4" role="alert">
+                                                        <?= $_SESSION['success'] ?>
+                                                    </div>
+                                                    <?php
+                                                        unset($_SESSION['success']);
+                                                    endif;
+
+                                                    // Lấy dữ liệu cũ (nếu có)
+                                                    $booking_old_data = $_SESSION['old_data'] ?? [];
+                                                    unset($_SESSION['old_data']);
+                                                    ?>
+
+                                                    <form method="POST" action="?action=bookTour">
+                                                        <input type="hidden" name="tour_id" value="<?= $tour['id'] ?>">
+
+                                                        <div class="row">
+                                                            <div class="col-md-6">
+                                                                <div class="form-group">
+                                                                    <label for="customer_name">Họ và tên <span
+                                                                            class="text-danger">*</span></label>
+                                                                    <input type="text" class="form-control"
+                                                                        id="customer_name" name="customer_name" required
+                                                                        value="<?= htmlspecialchars($booking_old_data['customer_name'] ?? '') ?>"
+                                                                        placeholder="Nhập họ và tên của bạn">
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-md-6">
+                                                                <div class="form-group">
+                                                                    <label for="customer_email">Email <span
+                                                                            class="text-danger">*</span></label>
+                                                                    <input type="email" class="form-control"
+                                                                        id="customer_email" name="customer_email"
+                                                                        required
+                                                                        value="<?= htmlspecialchars($booking_old_data['customer_email'] ?? '') ?>"
+                                                                        placeholder="Nhập email của bạn">
+                                                                </div>
+                                                            </div>
+                                                        </div>
+
+                                                        <div class="row">
+                                                            <div class="col-md-6">
+                                                                <div class="form-group">
+                                                                    <label for="customer_phone">Số điện thoại <span
+                                                                            class="text-danger">*</span></label>
+                                                                    <input type="tel" class="form-control"
+                                                                        id="customer_phone" name="customer_phone"
+                                                                        required
+                                                                        value="<?= htmlspecialchars($booking_old_data['customer_phone'] ?? '') ?>"
+                                                                        placeholder="Nhập số điện thoại">
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-md-6">
+                                                                <div class="form-group">
+                                                                    <label for="number_of_people">Số lượng người <span
+                                                                            class="text-danger">*</span></label>
+                                                                    <input type="number" class="form-control"
+                                                                        id="number_of_people" name="number_of_people"
+                                                                        required min="1" max="20"
+                                                                        value="<?= $booking_old_data['number_of_people'] ?? '1' ?>"
+                                                                        placeholder="Số người tham gia">
+                                                                </div>
+                                                            </div>
+                                                        </div>
+
+                                                        <div class="row">
+                                                            <div class="col-md-6">
+                                                                <div class="form-group">
+                                                                    <label for="booking_date">Ngày khởi hành <span
+                                                                            class="text-danger">*</span></label>
+                                                                    <input type="date" class="form-control"
+                                                                        id="booking_date" name="booking_date" required
+                                                                        value="<?= $booking_old_data['booking_date'] ?? '' ?>">
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-md-6">
+                                                                <div class="form-group">
+                                                                    <label>Tổng tiền dự kiến</label>
+                                                                    <div class="input-group">
+                                                                        <div class="input-group-prepend">
+                                                                            <span class="input-group-text">VNĐ</span>
+                                                                        </div>
+                                                                        <input type="text" class="form-control"
+                                                                            id="total_price_display" readonly
+                                                                            style="background-color: #e9ecef;"
+                                                                            value="<?= number_format($tour['base_price'], 0, ',', '.') ?>">
+                                                                    </div>
+                                                                    <small class="text-muted">Giá có thể thay đổi theo
+                                                                        thời điểm</small>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+
+                                                        <div class="form-group">
+                                                            <label for="special_requests">Yêu cầu đặc biệt</label>
+                                                            <textarea class="form-control" id="special_requests"
+                                                                name="special_requests" rows="3"
+                                                                placeholder="Nhập yêu cầu đặc biệt của bạn (tuỳ chọn)"><?= htmlspecialchars($booking_old_data['special_requests'] ?? '') ?></textarea>
+                                                        </div>
+
+                                                        <div class="text-center mt-4">
+                                                            <button type="submit" class="btn btn-success btn-lg">
+                                                                <i class="fas fa-paper-plane"></i> Đặt Tour Ngay
+                                                            </button>
+                                                        </div>
+                                                    </form>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-4">
+                                            <!-- Tour Summary -->
+                                            <div class="card shadow mb-4">
+                                                <div class="card-header py-3">
+                                                    <h6 class="m-0 font-weight-bold text-primary">Tóm tắt Tour</h6>
+                                                </div>
+                                                <div class="card-body">
+                                                    <h5 class="text-primary"><?= htmlspecialchars($tour['name']) ?></h5>
+                                                    <p class="text-muted mb-2"><strong>Mã tour:</strong>
+                                                        <?= $tour['tour_code'] ?></p>
+                                                    <p class="text-muted mb-2"><strong>Thời lượng:</strong>
+                                                        <?= htmlspecialchars($tour['duration']) ?></p>
+                                                    <p class="text-muted mb-3"><strong>Loại:</strong>
+                                                        <span
+                                                            class="badge <?= $tour['is_international'] == 1 ? 'badge-warning' : 'badge-success' ?>">
+                                                            <?= $tour['is_international'] == 1 ? 'Quốc tế' : 'Nội địa' ?>
+                                                        </span>
+                                                    </p>
+
+                                                    <hr>
+
+                                                    <div class="pricing">
+                                                        <h6 class="text-muted">Giá tour/người:</h6>
+                                                        <h4 class="text-danger font-weight-bold mb-3">
+                                                            <?= number_format($tour['base_price'], 0, ',', '.') ?> VNĐ
+                                                        </h4>
+                                                    </div>
+
+                                                    <div class="includes">
+                                                        <h6 class="text-muted">Bao gồm:</h6>
+                                                        <ul class="list-unstyled small">
+                                                            <li><i class="fas fa-check text-success"></i> Hướng dẫn viên
+                                                                chuyên nghiệp</li>
+                                                            <li><i class="fas fa-check text-success"></i> Phương tiện di
+                                                                chuyển</li>
+                                                            <li><i class="fas fa-check text-success"></i> Bảo hiểm du
+                                                                lịch</li>
+                                                            <li><i class="fas fa-check text-success"></i> Hỗ trợ 24/7
+                                                            </li>
+                                                        </ul>
+                                                    </div>
+
+                                                    <div class="contact-info mt-3 p-3 bg-light rounded">
+                                                        <h6 class="text-primary mb-2">Liên hệ tư vấn:</h6>
+                                                        <p class="mb-1"><i class="fas fa-phone text-primary"></i>
+                                                            Hotline: <strong>1900 1234</strong></p>
+                                                        <p class="mb-0"><i class="fas fa-envelope text-primary"></i>
+                                                            Email: <strong>support@tourcompany.com</strong></p>
+                                                    </div>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
@@ -400,6 +586,63 @@ unset($_SESSION['old_data']); // Xóa sau khi lấy ra
     <!-- Page level custom scripts -->
     <script src="assets/js/demo/chart-area-demo.js"></script>
     <script src="assets/js/demo/chart-pie-demo.js"></script>
+
+    <script>
+    $(document).ready(function() {
+        // Đặt ngày tối thiểu là ngày mai cho booking
+        var tomorrow = new Date();
+        tomorrow.setDate(tomorrow.getDate() + 1);
+        var tomorrowString = tomorrow.toISOString().split('T')[0];
+        $('#booking_date').attr('min', tomorrowString);
+
+        // Tính toán giá
+        var basePrice = <?= $tour['base_price'] ?>;
+
+        function updateTotalPrice() {
+            var numberOfPeople = parseInt($('#number_of_people').val()) || 1;
+            var totalPrice = basePrice * numberOfPeople;
+
+            $('#total_price_display').val(totalPrice.toLocaleString('vi-VN'));
+        }
+
+        // Cập nhật giá khi số người thay đổi
+        $('#number_of_people').on('input change', updateTotalPrice);
+
+        // Tính toán ban đầu
+        updateTotalPrice();
+
+        // Xác thực form
+        $('form').on('submit', function(e) {
+            var numberOfPeople = parseInt($('#number_of_people').val());
+            var bookingDate = $('#booking_date').val();
+
+            if (numberOfPeople < 1 || numberOfPeople > 20) {
+                alert('Số lượng người phải từ 1 đến 20!');
+                e.preventDefault();
+                return false;
+            }
+
+            if (!bookingDate) {
+                alert('Vui lòng chọn ngày khởi hành!');
+                e.preventDefault();
+                return false;
+            }
+
+            // Kiểm tra xem ngày có ở tương lai không
+            var selectedDate = new Date(bookingDate);
+            var today = new Date();
+            today.setHours(0, 0, 0, 0);
+
+            if (selectedDate <= today) {
+                alert('Ngày khởi hành phải là ngày trong tương lai!');
+                e.preventDefault();
+                return false;
+            }
+
+            return true;
+        });
+    });
+    </script>
 
 </body>
 

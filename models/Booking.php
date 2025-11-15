@@ -2,244 +2,256 @@
 
 class Booking extends BaseModel
 {
-    protected $table = 'bookings';
-
-    /**
-     * Lấy tất cả booking
-     */
-    public function getAllBookings()
-    {
-        $sql = "SELECT b.*, t.name as tour_name, t.tour_code, 
-                       u.full_name as user_name, u.email as user_email,
-                       g.full_name as guide_name, g.email as guide_email
-                FROM bookings b 
-                LEFT JOIN tours t ON b.tour_id = t.id 
-                LEFT JOIN users u ON b.user_id = u.id
-                LEFT JOIN users g ON b.guide_id = g.id
-                ORDER BY b.created_at DESC";
-        
-        $stmt = $this->pdo->prepare($sql);
-        $stmt->execute();
-        return $stmt->fetchAll();
-    }
-
-    /**
-     * Lấy booking theo ID
-     */
-    public function getBookingById($id)
-    {
-        $sql = "SELECT b.*, t.name as tour_name, t.tour_code, t.description as tour_description,
-                       t.base_price, t.duration, t.is_international,
-                       u.full_name as user_name, u.email as user_email, u.phone as user_phone,
-                       g.full_name as guide_name, g.email as guide_email, g.phone as guide_phone
-                FROM bookings b 
-                LEFT JOIN tours t ON b.tour_id = t.id 
-                LEFT JOIN users u ON b.user_id = u.id
-                LEFT JOIN users g ON b.guide_id = g.id
-                WHERE b.id = ?";
-        
-        $stmt = $this->pdo->prepare($sql);
-        $stmt->execute([$id]);
-        return $stmt->fetch();
-    }
-
-    /**
-     * Thêm booking mới
-     */
-    public function addBooking($user_id, $tour_id, $booking_date, $number_of_people, $total_price, $notes = '', $status = 'pending')
-    {
-        $booking_code = $this->generateBookingCode();
-        
-        $sql = "INSERT INTO bookings (booking_code, user_id, tour_id, booking_date, number_of_people, total_price, notes, status, created_at) 
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?, NOW())";
-        
-        $stmt = $this->pdo->prepare($sql);
-        return $stmt->execute([$booking_code, $user_id, $tour_id, $booking_date, $number_of_people, $total_price, $notes, $status]);
-    }
-
-    /**
-     * Cập nhật booking
-     */
-    public function updateBooking($id, $user_id, $tour_id, $booking_date, $number_of_people, $total_price, $notes, $status)
-    {
-        $sql = "UPDATE bookings SET 
-                user_id = ?, tour_id = ?, booking_date = ?, number_of_people = ?, 
-                total_price = ?, notes = ?, status = ?, updated_at = NOW()
-                WHERE id = ?";
-        
-        $stmt = $this->pdo->prepare($sql);
-        return $stmt->execute([$user_id, $tour_id, $booking_date, $number_of_people, $total_price, $notes, $status, $id]);
-    }
-
-    /**
-     * Xóa booking
-     */
-    public function deleteBooking($id)
-    {
-        $sql = "DELETE FROM bookings WHERE id = ?";
-        $stmt = $this->pdo->prepare($sql);
-        return $stmt->execute([$id]);
-    }
-
-    /**
-     * Gán hướng dẫn viên cho booking
-     */
-    public function assignGuide($booking_id, $guide_id)
-    {
-        $sql = "UPDATE bookings SET guide_id = ?, status = 'assigned', updated_at = NOW() WHERE id = ?";
-        $stmt = $this->pdo->prepare($sql);
-        return $stmt->execute([$guide_id, $booking_id]);
-    }
-
-    /**
-     * Cập nhật trạng thái booking
-     */
-    public function updateStatus($booking_id, $status)
-    {
-        $sql = "UPDATE bookings SET status = ?, updated_at = NOW() WHERE id = ?";
-        $stmt = $this->pdo->prepare($sql);
-        return $stmt->execute([$status, $booking_id]);
-    }
-
-    /**
-     * Lấy danh sách hướng dẫn viên (users với role = 'guide')
-     */
-    public function getAllGuides()
-    {
-        $sql = "SELECT id, full_name, email, phone FROM users WHERE role = 'guide' AND status = 'active' ORDER BY full_name";
-        $stmt = $this->pdo->prepare($sql);
-        $stmt->execute();
-        return $stmt->fetchAll();
-    }
-
-    /**
-     * Lấy danh sách khách hàng
-     */
-    public function getAllUsers()
-    {
-        $sql = "SELECT id, full_name, email, phone FROM users WHERE role = 'user' ORDER BY full_name";
-        $stmt = $this->pdo->prepare($sql);
-        $stmt->execute();
-        return $stmt->fetchAll();
-    }
-
-    /**
-     * Tìm kiếm booking theo nhiều tiêu chí
-     */
-    public function searchBookings($keyword = '', $status = '', $date_from = '', $date_to = '')
-    {
-        $sql = "SELECT b.*, t.name as tour_name, t.tour_code, 
-                       u.full_name as user_name, u.email as user_email,
-                       g.full_name as guide_name
-                FROM bookings b 
-                LEFT JOIN tours t ON b.tour_id = t.id 
-                LEFT JOIN users u ON b.user_id = u.id
-                LEFT JOIN users g ON b.guide_id = g.id
-                WHERE 1=1";
-        
-        $params = [];
-        
-        if (!empty($keyword)) {
-            $sql .= " AND (b.booking_code LIKE ? OR u.full_name LIKE ? OR t.name LIKE ?)";
-            $params[] = "%$keyword%";
-            $params[] = "%$keyword%";
-            $params[] = "%$keyword%";
+    // Lấy tất cả booking với thông tin khách hàng
+    public function getAllBookings() {
+        try {
+            $sql = "SELECT b.*, c.name as customer_name, c.phone as customer_phone, c.email as customer_email
+                   FROM bookings b 
+                   LEFT JOIN customers c ON b.customer_id = c.id
+                   ORDER BY b.id DESC";
+            
+            $stmt = $this->pdo->prepare($sql);
+            $stmt->execute();
+            return $stmt->fetchAll(PDO::FETCH_ASSOC);
+            
+        } catch (PDOException $e) {
+            // Fallback: chỉ lấy dữ liệu từ bảng bookings
+            try {
+                $sql = "SELECT * FROM bookings ORDER BY id DESC";
+                $stmt = $this->pdo->prepare($sql);
+                $stmt->execute();
+                return $stmt->fetchAll(PDO::FETCH_ASSOC);
+            } catch (PDOException $e2) {
+                return [];
+            }
         }
-        
-        if (!empty($status)) {
-            $sql .= " AND b.status = ?";
-            $params[] = $status;
+    }
+
+    // Lấy booking theo ID
+    public function getBookingById($id) {
+        try {
+            $sql = "SELECT b.*, c.name as customer_name, c.phone as customer_phone, c.email as customer_email, c.address as customer_address
+                   FROM bookings b 
+                   LEFT JOIN customers c ON b.customer_id = c.id
+                   WHERE b.id = :id";
+            
+            $stmt = $this->pdo->prepare($sql);
+            $stmt->execute(['id' => $id]);
+            return $stmt->fetch(PDO::FETCH_ASSOC);
+            
+        } catch (PDOException $e) {
+            // Fallback: chỉ lấy dữ liệu từ bảng bookings
+            try {
+                $sql = "SELECT * FROM bookings WHERE id = :id";
+                $stmt = $this->pdo->prepare($sql);
+                $stmt->execute(['id' => $id]);
+                return $stmt->fetch(PDO::FETCH_ASSOC);
+            } catch (PDOException $e2) {
+                return false;
+            }
         }
-        
-        if (!empty($date_from)) {
-            $sql .= " AND b.booking_date >= ?";
-            $params[] = $date_from;
+    }
+
+    // Thêm booking mới
+    public function addBooking($data) {
+        try {
+            // Tìm hoặc tạo customer trước
+            $customer_id = $this->findOrCreateCustomer($data);
+            
+            $sql = "INSERT INTO bookings (customer_id, booking_code, booking_date, total_amount, deposit_amount, status) 
+                   VALUES (:customer_id, :booking_code, :booking_date, :total_amount, :deposit_amount, :status)";
+            
+            $stmt = $this->pdo->prepare($sql);
+            $stmt->execute([
+                ':customer_id' => $customer_id,
+                ':booking_code' => $data['booking_code'] ?? $this->generateBookingCode(),
+                ':booking_date' => $data['booking_date'] ?? date('Y-m-d H:i:s'),
+                ':total_amount' => $data['total_amount'] ?? 0,
+                ':deposit_amount' => $data['deposit_amount'] ?? 0,
+                ':status' => $data['status'] ?? 'Pending'
+            ]);
+            
+            return $this->pdo->lastInsertId();
+            
+        } catch (PDOException $e) {
+            throw new Exception("Không thể thêm booking: " . $e->getMessage());
         }
-        
-        if (!empty($date_to)) {
-            $sql .= " AND b.booking_date <= ?";
-            $params[] = $date_to;
+    }
+
+    // Cập nhật booking
+    public function updateBooking($id, $data) {
+        try {
+            // Cập nhật thông tin customer nếu có
+            if (isset($data['customer_name']) || isset($data['customer_phone']) || isset($data['customer_email'])) {
+                $booking = $this->getBookingById($id);
+                if ($booking && $booking['customer_id']) {
+                    $this->updateCustomer($booking['customer_id'], $data);
+                }
+            }
+            
+            $sql = "UPDATE bookings SET 
+                   booking_code = :booking_code,
+                   booking_date = :booking_date,
+                   total_amount = :total_amount,
+                   deposit_amount = :deposit_amount,
+                   status = :status
+                   WHERE id = :id";
+            
+            $stmt = $this->pdo->prepare($sql);
+            return $stmt->execute([
+                ':id' => $id,
+                ':booking_code' => $data['booking_code'],
+                ':booking_date' => $data['booking_date'],
+                ':total_amount' => $data['total_amount'],
+                ':deposit_amount' => $data['deposit_amount'],
+                ':status' => $data['status']
+            ]);
+        } catch (PDOException $e) {
+            return false;
         }
-        
-        $sql .= " ORDER BY b.created_at DESC";
-        
-        $stmt = $this->pdo->prepare($sql);
-        $stmt->execute($params);
-        return $stmt->fetchAll();
     }
 
-    /**
-     * Tạo mã booking tự động
-     */
-    private function generateBookingCode()
-    {
-        $prefix = 'BK';
-        $timestamp = date('Ymd');
-        
-        // Lấy số thứ tự booking trong ngày
-        $sql = "SELECT COUNT(*) as count FROM bookings WHERE DATE(created_at) = CURDATE()";
-        $stmt = $this->pdo->prepare($sql);
-        $stmt->execute();
-        $count = $stmt->fetch()['count'] + 1;
-        
-        return $prefix . $timestamp . str_pad($count, 3, '0', STR_PAD_LEFT);
+    // Xóa booking
+    public function deleteBooking($id) {
+        try {
+            $sql = "DELETE FROM bookings WHERE id = :id";
+            $stmt = $this->pdo->prepare($sql);
+            return $stmt->execute(['id' => $id]);
+        } catch (PDOException $e) {
+            return false;
+        }
     }
 
-    /**
-     * Kiểm tra booking code có tồn tại không
-     */
-    public function checkBookingCodeExists($booking_code)
-    {
-        $sql = "SELECT COUNT(*) as count FROM bookings WHERE booking_code = ?";
-        $stmt = $this->pdo->prepare($sql);
-        $stmt->execute([$booking_code]);
-        return $stmt->fetch()['count'] > 0;
+    // Tạo mã booking tự động
+    private function generateBookingCode() {
+        return 'BK' . date('Ymd') . rand(1000, 9999);
     }
 
-    /**
-     * Lấy thống kê booking theo trạng thái
-     */
-    public function getBookingStats()
-    {
-        $sql = "SELECT status, COUNT(*) as count FROM bookings GROUP BY status";
-        $stmt = $this->pdo->prepare($sql);
-        $stmt->execute();
-        return $stmt->fetchAll();
+    // Tìm hoặc tạo customer
+    private function findOrCreateCustomer($data) {
+        try {
+            // Tìm customer theo phone hoặc email
+            $sql = "SELECT id FROM customers WHERE phone = :phone OR email = :email LIMIT 1";
+            $stmt = $this->pdo->prepare($sql);
+            $stmt->execute([
+                ':phone' => $data['customer_phone'] ?? '',
+                ':email' => $data['customer_email'] ?? ''
+            ]);
+            
+            $customer = $stmt->fetch(PDO::FETCH_ASSOC);
+            
+            if ($customer) {
+                return $customer['id'];
+            } else {
+                // Tạo customer mới
+                $sql = "INSERT INTO customers (name, phone, email, address) VALUES (:name, :phone, :email, :address)";
+                $stmt = $this->pdo->prepare($sql);
+                $stmt->execute([
+                    ':name' => $data['customer_name'] ?? 'Khách hàng',
+                    ':phone' => $data['customer_phone'] ?? '',
+                    ':email' => $data['customer_email'] ?? '',
+                    ':address' => $data['customer_address'] ?? ''
+                ]);
+                
+                return $this->pdo->lastInsertId();
+            }
+        } catch (PDOException $e) {
+            // Fallback: trả về customer_id mặc định
+            return 1;
+        }
     }
 
-    /**
-     * Lấy booking theo user_id
-     */
-    public function getBookingsByUserId($user_id)
-    {
-        $sql = "SELECT b.*, t.name as tour_name, t.tour_code, 
-                       g.full_name as guide_name, g.phone as guide_phone
-                FROM bookings b 
-                LEFT JOIN tours t ON b.tour_id = t.id 
-                LEFT JOIN users g ON b.guide_id = g.id
-                WHERE b.user_id = ?
-                ORDER BY b.created_at DESC";
-        
-        $stmt = $this->pdo->prepare($sql);
-        $stmt->execute([$user_id]);
-        return $stmt->fetchAll();
+    // Cập nhật thông tin customer
+    private function updateCustomer($customer_id, $data) {
+        try {
+            $sql = "UPDATE customers SET name = :name, phone = :phone, email = :email, address = :address WHERE id = :id";
+            $stmt = $this->pdo->prepare($sql);
+            return $stmt->execute([
+                ':id' => $customer_id,
+                ':name' => $data['customer_name'] ?? '',
+                ':phone' => $data['customer_phone'] ?? '',
+                ':email' => $data['customer_email'] ?? '',
+                ':address' => $data['customer_address'] ?? ''
+            ]);
+        } catch (PDOException $e) {
+            return false;
+        }
     }
 
-    /**
-     * Lấy booking theo guide_id
-     */
-    public function getBookingsByGuideId($guide_id)
-    {
-        $sql = "SELECT b.*, t.name as tour_name, t.tour_code, 
-                       u.full_name as user_name, u.phone as user_phone, u.email as user_email
-                FROM bookings b 
-                LEFT JOIN tours t ON b.tour_id = t.id 
-                LEFT JOIN users u ON b.user_id = u.id
-                WHERE b.guide_id = ?
-                ORDER BY b.booking_date ASC";
-        
-        $stmt = $this->pdo->prepare($sql);
-        $stmt->execute([$guide_id]);
-        return $stmt->fetchAll();
+    // Lấy tất cả customers để chọn
+    public function getAllCustomers() {
+        try {
+            $sql = "SELECT * FROM customers ORDER BY name ASC";
+            $stmt = $this->pdo->prepare($sql);
+            $stmt->execute();
+            return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        } catch (PDOException $e) {
+            return [];
+        }
+    }
+
+    // Lấy booking theo status
+    public function getBookingsByStatus($status) {
+        try {
+            $sql = "SELECT b.*, c.name as customer_name, c.phone as customer_phone
+                   FROM bookings b 
+                   LEFT JOIN customers c ON b.customer_id = c.id
+                   WHERE b.status = :status
+                   ORDER BY b.booking_date DESC";
+            
+            $stmt = $this->pdo->prepare($sql);
+            $stmt->execute(['status' => $status]);
+            return $stmt->fetchAll(PDO::FETCH_ASSOC);
+            
+        } catch (PDOException $e) {
+            return [];
+        }
+    }
+
+    // Thống kê booking
+    public function getBookingStats() {
+        try {
+            $sql = "SELECT 
+                       status,
+                       COUNT(*) as count,
+                       SUM(total_amount) as total_amount
+                   FROM bookings 
+                   GROUP BY status";
+            
+            $stmt = $this->pdo->prepare($sql);
+            $stmt->execute();
+            return $stmt->fetchAll(PDO::FETCH_ASSOC);
+            
+        } catch (PDOException $e) {
+            return [];
+        }
+    }
+
+    // Tính tổng tiền booking (trả về total_amount)
+    public function calculateTotalPrice($booking_id) {
+        try {
+            $sql = "SELECT total_amount FROM bookings WHERE id = :booking_id";
+            $stmt = $this->pdo->prepare($sql);
+            $stmt->execute(['booking_id' => $booking_id]);
+            $result = $stmt->fetch(PDO::FETCH_ASSOC);
+            
+            return $result ? $result['total_amount'] : 0;
+        } catch (PDOException $e) {
+            return 0;
+        }
+    }
+
+    // Cập nhật trạng thái booking
+    public function updateBookingStatus($id, $status) {
+        try {
+            $sql = "UPDATE bookings SET status = :status WHERE id = :id";
+            $stmt = $this->pdo->prepare($sql);
+            return $stmt->execute([
+                ':id' => $id,
+                ':status' => $status
+            ]);
+        } catch (PDOException $e) {
+            return false;
+        }
     }
 }
