@@ -77,8 +77,8 @@
 
             <hr class="sidebar-divider">
 
-            <li class="nav-item active">
-                <a class="nav-link" href="#">
+            <li class="nav-item">
+                <a class="nav-link" href="?action=customers">
                     <span>Quản lý khách hàng</span>
                 </a>
             </li>
