@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="vi">
+<html lang="en">
 
 <head>
 
@@ -52,25 +52,18 @@
             <hr class="sidebar-divider">
 
             <!-- Nav Item-->
-            <li class="nav-item active">
-                <a class="nav-link" href="?action=tours">
+
+            <li class="nav-item">
+                <a class="nav-link" href="?action=tours" style="cursor: pointer;">
                     <span>Quản lý tour</span>
                 </a>
             </li>
 
             <hr class="sidebar-divider">
 
-            <li class="nav-item active">
-                <a class="nav-link" href="#">
+            <li class="nav-item">
+                <a class="nav-link" href="?action=bookings" style="cursor: pointer;">
                     <span>Quản lý booking</span>
-                </a>
-            </li>
-
-            <hr class="sidebar-divider">
-
-            <li class="nav-item active">
-                <a class="nav-link" href="#">
-                    <span>Booking assignment</span>
                 </a>
             </li>
 
@@ -101,7 +94,7 @@
             <hr class="sidebar-divider">
 
             <li class="nav-item active">
-                <a class="nav-link" href="?action=accounts">
+                <a class="nav-link" href="#">
                     <span>Quản lý tài khoản</span>
                 </a>
             </li>
@@ -194,8 +187,7 @@
                             <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button"
                                 data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                 <span class="mr-2 d-none d-lg-inline text-gray-600 small">Douglas McGee</span>
-                                <img class="img-profile rounded-circle"
-                                    src="assets/img/undraw_profile.svg">
+                                <img class="img-profile rounded-circle" src="assets/img/undraw_profile.svg">
                             </a>
                             <!-- Dropdown - User Information -->
                             <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in"

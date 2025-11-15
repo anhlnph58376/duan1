@@ -1,5 +1,29 @@
+<?php
+// Lấy dữ liệu cũ (nếu có)
+$old_data = $_SESSION['old_data'] ?? [];
+unset($_SESSION['old_data']);
+
+// Sử dụng dữ liệu cũ hoặc dữ liệu mặc định
+$data = !empty($old_data) ? $old_data : [];
+
+if (isset($_SESSION['error'])): ?>
+<div class="alert alert-danger mb-4" role="alert">
+    <?= $_SESSION['error'] ?>
+</div>
+<?php
+    unset($_SESSION['error']);
+endif;
+
+if (isset($_SESSION['success'])): ?>
+<div class="alert alert-success mb-4" role="alert">
+    <?= $_SESSION['success'] ?>
+</div>
+<?php
+    unset($_SESSION['success']);
+endif;
+?>
 <!DOCTYPE html>
-<html lang="vi">
+<html lang="en">
 
 <head>
     <meta charset="utf-8">
@@ -8,7 +32,7 @@
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <title>Thêm Booking</title>
+    <title>Thêm Booking Mới</title>
 
     <!-- Custom fonts for this template-->
     <link href="assets/vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
@@ -18,7 +42,6 @@
 
     <!-- Custom styles for this template-->
     <link href="assets/css/sb-admin-2.min.css" rel="stylesheet">
-
 </head>
 
 <body id="page-top">
@@ -54,15 +77,16 @@
             <li class="nav-item">
                 <a class="nav-link" href="?action=tours">
                     <i class="fas fa-fw fa-map-marked-alt"></i>
-                    <span>Tours</span>
+                    <span>Quản lý tour</span>
                 </a>
             </li>
 
-            <!-- Nav Item - Bookings -->
+            <hr class="sidebar-divider">
+
             <li class="nav-item active">
                 <a class="nav-link" href="?action=bookings">
                     <i class="fas fa-fw fa-calendar-check"></i>
-                    <span>Bookings</span>
+                    <span>Quản lý booking</span>
                 </a>
             </li>
 
@@ -87,17 +111,22 @@
                 <nav class="navbar navbar-expand navbar-light bg-white topbar mb-4 static-top shadow">
 
                     <!-- Sidebar Toggle (Topbar) -->
-                    <button id="sidebarToggleTop" class="btn btn-link d-md-none rounded-circle mr-3">
-                        <i class="fa fa-bars"></i>
-                    </button>
+                    <form class="form-inline">
+                        <button id="sidebarToggleTop" class="btn btn-link d-md-none rounded-circle mr-3">
+                            <i class="fa fa-bars"></i>
+                        </button>
+                    </form>
 
                     <!-- Topbar Navbar -->
                     <ul class="navbar-nav ml-auto">
+
+                        <div class="topbar-divider d-none d-sm-block"></div>
+
                         <!-- Nav Item - User Information -->
                         <li class="nav-item dropdown no-arrow">
                             <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button"
                                 data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                <span class="mr-2 d-none d-lg-inline text-gray-600 small">Admin</span>
+                                <span class="mr-2 d-none d-lg-inline text-gray-600 small">Douglas McGee</span>
                                 <img class="img-profile rounded-circle"
                                     src="assets/img/undraw_profile.svg">
                             </a>
@@ -112,128 +141,163 @@
 
                     <!-- Page Heading -->
                     <div class="d-sm-flex align-items-center justify-content-between mb-4">
-                        <h1 class="h3 mb-0 text-gray-800">Thêm Booking Mới</h1>
+                        <h1 class="h3 mb-0 text-gray-800">
+                            <i class="fas fa-plus-circle"></i> Thêm Booking Mới
+                        </h1>
                         <a href="?action=bookings" class="d-none d-sm-inline-block btn btn-sm btn-secondary shadow-sm">
                             <i class="fas fa-arrow-left fa-sm text-white-50"></i> Quay lại
                         </a>
                     </div>
 
-                    <!-- Alert Messages -->
-                    <?php if (isset($_SESSION['error_message'])): ?>
-                        <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                            <?= $_SESSION['error_message'] ?>
-                            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                                <span aria-hidden="true">&times;</span>
-                            </button>
+                    <div class="row">
+                        <!-- Form thêm booking -->
+                        <div class="col-lg-8">
+                            <div class="card shadow mb-4">
+                                <div class="card-header py-3">
+                                    <h6 class="m-0 font-weight-bold text-primary">
+                                        <i class="fas fa-user-plus"></i> Thông tin Booking
+                                    </h6>
+                                </div>
+                                <div class="card-body">
+                                    <form method="POST" action="?action=addBooking" id="bookingForm">
+                                        <!-- Thông tin khách hàng -->
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <div class="form-group">
+                                                    <label for="customer_name">Tên khách hàng <span class="text-danger">*</span></label>
+                                                    <input type="text" class="form-control" id="customer_name" name="customer_name" 
+                                                           required value="<?= htmlspecialchars($data['customer_name'] ?? '') ?>"
+                                                           placeholder="Nhập tên khách hàng">
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="form-group">
+                                                    <label for="customer_phone">Số điện thoại <span class="text-danger">*</span></label>
+                                                    <input type="tel" class="form-control" id="customer_phone" name="customer_phone" 
+                                                           required value="<?= htmlspecialchars($data['customer_phone'] ?? '') ?>"
+                                                           placeholder="Nhập số điện thoại">
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <div class="form-group">
+                                                    <label for="customer_email">Email</label>
+                                                    <input type="email" class="form-control" id="customer_email" name="customer_email" 
+                                                           value="<?= htmlspecialchars($data['customer_email'] ?? '') ?>"
+                                                           placeholder="Nhập email khách hàng">
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="form-group">
+                                                    <label for="customer_address">Địa chỉ</label>
+                                                    <input type="text" class="form-control" id="customer_address" name="customer_address" 
+                                                           value="<?= htmlspecialchars($data['customer_address'] ?? '') ?>"
+                                                           placeholder="Nhập địa chỉ khách hàng">
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <!-- Thông tin booking -->
+                                        <hr class="my-4">
+                                        <h6 class="text-primary mb-3">
+                                            <i class="fas fa-calendar-alt"></i> Thông tin đặt tour
+                                        </h6>
+
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <div class="form-group">
+                                                    <label for="booking_date">Ngày booking <span class="text-danger">*</span></label>
+                                                    <input type="datetime-local" class="form-control" id="booking_date" name="booking_date" 
+                                                           required value="<?= $data['booking_date'] ?? date('Y-m-d\TH:i') ?>">
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="form-group">
+                                                    <label for="status">Trạng thái</label>
+                                                    <select class="form-control" id="status" name="status">
+                                                        <option value="Pending" <?= (($data['status'] ?? 'Pending') == 'Pending') ? 'selected' : '' ?>>Chờ xác nhận</option>
+                                                        <option value="Deposited" <?= (($data['status'] ?? '') == 'Deposited') ? 'selected' : '' ?>>Đã cọc</option>
+                                                        <option value="Completed" <?= (($data['status'] ?? '') == 'Completed') ? 'selected' : '' ?>>Hoàn tất</option>
+                                                        <option value="Canceled" <?= (($data['status'] ?? '') == 'Canceled') ? 'selected' : '' ?>>Hủy</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <div class="form-group">
+                                                    <label for="total_amount">Tổng tiền <span class="text-danger">*</span></label>
+                                                    <input type="number" class="form-control" id="total_amount" name="total_amount" 
+                                                           min="0" step="1000" required
+                                                           value="<?= $data['total_amount'] ?? '' ?>"
+                                                           placeholder="0">
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="form-group">
+                                                    <label for="deposit_amount">Tiền cọc</label>
+                                                    <input type="number" class="form-control" id="deposit_amount" name="deposit_amount" 
+                                                           min="0" step="1000"
+                                                           value="<?= $data['deposit_amount'] ?? '0' ?>"
+                                                           placeholder="0">
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group mt-4">
+                                            <button type="submit" class="btn btn-primary btn-lg">
+                                                <i class="fas fa-save"></i> Thêm Booking
+                                            </button>
+                                            <a href="?action=bookings" class="btn btn-secondary btn-lg ml-2">
+                                                <i class="fas fa-times"></i> Hủy
+                                            </a>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
                         </div>
-                        <?php unset($_SESSION['error_message']); ?>
-                    <?php endif; ?>
 
-                    <!-- Form Add Booking -->
-                    <div class="card shadow mb-4">
-                        <div class="card-header py-3">
-                            <h6 class="m-0 font-weight-bold text-primary">Thông tin Booking</h6>
-                        </div>
-                        <div class="card-body">
-                            <form action="?action=booking_store" method="POST">
-                                <div class="row">
-                                    <!-- Khách hàng -->
-                                    <div class="col-md-6">
-                                        <div class="form-group">
-                                            <label for="user_id">Khách hàng <span class="text-danger">*</span></label>
-                                            <select class="form-control" id="user_id" name="user_id" required>
-                                                <option value="">Chọn khách hàng</option>
-                                                <?php foreach ($users as $user): ?>
-                                                    <option value="<?= $user['id'] ?>" 
-                                                            <?= (isset($_SESSION['old_data']['user_id']) && $_SESSION['old_data']['user_id'] == $user['id']) ? 'selected' : '' ?>>
-                                                        <?= $user['full_name'] ?> - <?= $user['email'] ?>
-                                                    </option>
-                                                <?php endforeach; ?>
-                                            </select>
+                        <!-- Thông tin hướng dẫn -->
+                        <div class="col-lg-4">
+                            <div class="card border-left-info shadow h-100 py-2">
+                                <div class="card-body">
+                                    <div class="row no-gutters align-items-center">
+                                        <div class="col mr-2">
+                                            <div class="text-xs font-weight-bold text-info text-uppercase mb-1">
+                                                Hướng dẫn
+                                            </div>
+                                            <div class="text-gray-900">
+                                                <ul class="mb-0">
+                                                    <li>Các trường có dấu (*) là bắt buộc</li>
+                                                    <li>Số điện thoại sẽ được dùng để liên hệ</li>
+                                                    <li>Mã booking sẽ tự động tạo</li>
+                                                    <li>Tổng tiền tính bằng VNĐ</li>
+                                                </ul>
+                                            </div>
                                         </div>
-                                    </div>
-
-                                    <!-- Tour -->
-                                    <div class="col-md-6">
-                                        <div class="form-group">
-                                            <label for="tour_id">Tour <span class="text-danger">*</span></label>
-                                            <select class="form-control" id="tour_id" name="tour_id" required>
-                                                <option value="">Chọn tour</option>
-                                                <?php foreach ($tours as $tour): ?>
-                                                    <option value="<?= $tour['id'] ?>" 
-                                                            data-price="<?= $tour['base_price'] ?>"
-                                                            <?= (isset($_SESSION['old_data']['tour_id']) && $_SESSION['old_data']['tour_id'] == $tour['id']) ? 'selected' : '' ?>>
-                                                        <?= $tour['tour_code'] ?> - <?= $tour['name'] ?> 
-                                                        (<?= number_format($tour['base_price']) ?> VND/người)
-                                                    </option>
-                                                <?php endforeach; ?>
-                                            </select>
+                                        <div class="col-auto">
+                                            <i class="fas fa-info-circle fa-2x text-gray-300"></i>
                                         </div>
                                     </div>
                                 </div>
+                            </div>
 
-                                <div class="row">
-                                    <!-- Ngày đặt tour -->
-                                    <div class="col-md-6">
-                                        <div class="form-group">
-                                            <label for="booking_date">Ngày đặt tour <span class="text-danger">*</span></label>
-                                            <input type="date" class="form-control" id="booking_date" name="booking_date" 
-                                                   min="<?= date('Y-m-d', strtotime('+1 day')) ?>" 
-                                                   value="<?= $_SESSION['old_data']['booking_date'] ?? '' ?>" required>
-                                        </div>
+                            <div class="card border-left-success shadow mt-4">
+                                <div class="card-body">
+                                    <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
+                                        Trạng thái Booking
                                     </div>
-
-                                    <!-- Số người -->
-                                    <div class="col-md-6">
-                                        <div class="form-group">
-                                            <label for="number_of_people">Số người <span class="text-danger">*</span></label>
-                                            <input type="number" class="form-control" id="number_of_people" name="number_of_people" 
-                                                   min="1" max="50" 
-                                                   value="<?= $_SESSION['old_data']['number_of_people'] ?? 1 ?>" required>
-                                        </div>
+                                    <div class="text-gray-900 small">
+                                        <p class="mb-1"><span class="badge badge-warning">Pending</span> - Chờ xác nhận</p>
+                                        <p class="mb-1"><span class="badge badge-info">Deposited</span> - Đã cọc</p>
+                                        <p class="mb-1"><span class="badge badge-success">Completed</span> - Hoàn tất</p>
+                                        <p class="mb-0"><span class="badge badge-danger">Canceled</span> - Hủy</p>
                                     </div>
                                 </div>
-
-                                <div class="row">
-                                    <!-- Tổng tiền -->
-                                    <div class="col-md-6">
-                                        <div class="form-group">
-                                            <label for="total_price">Tổng tiền (VND) <span class="text-danger">*</span></label>
-                                            <input type="number" class="form-control" id="total_price" name="total_price" 
-                                                   readonly value="<?= $_SESSION['old_data']['total_price'] ?? 0 ?>" required>
-                                        </div>
-                                    </div>
-
-                                    <!-- Trạng thái -->
-                                    <div class="col-md-6">
-                                        <div class="form-group">
-                                            <label for="status">Trạng thái</label>
-                                            <select class="form-control" id="status" name="status">
-                                                <option value="pending" <?= (isset($_SESSION['old_data']['status']) && $_SESSION['old_data']['status'] == 'pending') ? 'selected' : 'selected' ?>>Chờ xử lý</option>
-                                                <option value="confirmed" <?= (isset($_SESSION['old_data']['status']) && $_SESSION['old_data']['status'] == 'confirmed') ? 'selected' : '' ?>>Đã xác nhận</option>
-                                            </select>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <!-- Ghi chú -->
-                                <div class="row">
-                                    <div class="col-md-12">
-                                        <div class="form-group">
-                                            <label for="notes">Ghi chú</label>
-                                            <textarea class="form-control" id="notes" name="notes" rows="3" 
-                                                      placeholder="Nhập ghi chú thêm..."><?= $_SESSION['old_data']['notes'] ?? '' ?></textarea>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="form-group text-right">
-                                    <button type="reset" class="btn btn-secondary">Reset</button>
-                                    <button type="submit" class="btn btn-primary">
-                                        <i class="fas fa-save"></i> Lưu Booking
-                                    </button>
-                                </div>
-                            </form>
+                            </div>
                         </div>
                     </div>
 
@@ -247,7 +311,7 @@
             <footer class="sticky-footer bg-white">
                 <div class="container my-auto">
                     <div class="copyright text-center my-auto">
-                        <span>Copyright &copy; Your Website 2024</span>
+                        <span>Copyright &copy; Your Website 2021</span>
                     </div>
                 </div>
             </footer>
@@ -275,33 +339,39 @@
     <script src="assets/js/sb-admin-2.min.js"></script>
 
     <script>
-        // Tự động tính tổng tiền khi thay đổi tour hoặc số người
-        $(document).ready(function() {
-            function calculateTotal() {
-                var tourSelect = $('#tour_id');
-                var numberOfPeople = $('#number_of_people').val();
-                var selectedOption = tourSelect.find('option:selected');
-                var basePrice = selectedOption.data('price');
+    // Auto format số tiền
+    document.getElementById('total_amount').addEventListener('input', function(e) {
+        let value = e.target.value.replace(/[^0-9]/g, '');
+        if (value) {
+            e.target.value = parseInt(value).toLocaleString('vi-VN').replace(/,/g, '');
+        }
+    });
+    
+    document.getElementById('deposit_amount').addEventListener('input', function(e) {
+        let value = e.target.value.replace(/[^0-9]/g, '');
+        if (value) {
+            e.target.value = parseInt(value).toLocaleString('vi-VN').replace(/,/g, '');
+        }
+    });
 
-                if (basePrice && numberOfPeople) {
-                    var totalPrice = basePrice * numberOfPeople;
-                    $('#total_price').val(totalPrice);
-                } else {
-                    $('#total_price').val(0);
-                }
-            }
-
-            $('#tour_id, #number_of_people').change(calculateTotal);
+    // Validation form
+    document.getElementById('bookingForm').addEventListener('submit', function(e) {
+        const totalAmount = document.getElementById('total_amount').value;
+        const depositAmount = document.getElementById('deposit_amount').value;
+        
+        if (totalAmount && depositAmount) {
+            const total = parseInt(totalAmount.replace(/[^0-9]/g, ''));
+            const deposit = parseInt(depositAmount.replace(/[^0-9]/g, ''));
             
-            // Tính toán lần đầu nếu có dữ liệu cũ
-            calculateTotal();
-        });
+            if (deposit > total) {
+                e.preventDefault();
+                alert('Tiền cọc không thể lớn hơn tổng tiền!');
+                return false;
+            }
+        }
+    });
     </script>
 
 </body>
 
 </html>
-<?php 
-// Clear old data after displaying
-unset($_SESSION['old_data']); 
-?>
