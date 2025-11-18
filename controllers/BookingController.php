@@ -13,8 +13,9 @@ class BookingController
     // Hiển thị danh sách booking
     public function bookings()
     {
-        $bookings = $this->booking->getAllBookings();
+        $bookings = $this->booking->getAllBookingsWithDepartures();
         $stats = $this->booking->getBookingStats();
+        $departures = $this->booking->getAvailableDepartures();
         
         require_once PATH_VIEW . 'bookings.php';
     }
@@ -309,6 +310,114 @@ class BookingController
                 header('Location: ?action=tour_detail&id=' . $tour_id);
             }
             exit;
+        }
+    }
+
+    /**
+     * Thêm booking vào departure
+     */
+    public function addBookingToDeparture()
+    {
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            header('Location: ?action=bookings');
+            exit;
+        }
+
+        $booking_id = $_POST['booking_id'] ?? '';
+        $departure_id = $_POST['departure_id'] ?? '';
+        $pax_count = $_POST['pax_count'] ?? 1;
+
+        if (!$booking_id || !$departure_id) {
+            $_SESSION['error'] = 'Thông tin không hợp lệ!';
+            header('Location: ?action=bookings');
+            exit;
+        }
+
+        try {
+            $result = $this->booking->addBookingToDeparture($booking_id, $departure_id, $pax_count);
+
+            if ($result) {
+                $_SESSION['success'] = 'Thêm booking vào đoàn thành công!';
+            } else {
+                $_SESSION['error'] = 'Có lỗi khi thêm booking vào đoàn!';
+            }
+
+        } catch (Exception $e) {
+            $_SESSION['error'] = 'Có lỗi: ' . $e->getMessage();
+        }
+
+        header('Location: ?action=bookings');
+        exit;
+    }
+
+    /**
+     * Hiển thị form tạo đoàn mới từ booking
+     */
+    public function createNewDeparture()
+    {
+        $bookingId = $_GET['booking_id'] ?? null;
+        
+        if (!$bookingId) {
+            $_SESSION['message'] = 'Không tìm thấy thông tin booking!';
+            $_SESSION['message_type'] = 'error';
+            header("Location: index.php?action=bookings");
+            exit();
+        }
+
+        $booking = $this->booking->getBookingById($bookingId);
+        
+        if (!$booking) {
+            $_SESSION['message'] = 'Không tìm thấy booking!';
+            $_SESSION['message_type'] = 'error';
+            header("Location: index.php?action=bookings");
+            exit();
+        }
+
+        $tours = $this->tours->getAllTours();
+        include 'views/booking_create_new_departure.php';
+    }
+
+    /**
+     * Xử lý tạo đoàn mới từ booking
+     */
+    public function processNewDeparture()
+    {
+        if ($_POST) {
+            try {
+                $booking_id = $_POST['booking_id'];
+                $tour_id = $_POST['tour_id'];
+                $departure_date = $_POST['departure_date'];
+                $return_date = $_POST['return_date'];
+                $min_pax = (int)$_POST['min_pax'];
+                $max_pax = (int)$_POST['max_pax'];
+                $pax_count = (int)$_POST['pax_count'];
+                $status = $_POST['status'] ?? 'Scheduled';
+
+                $db = new PDO("mysql:host=localhost;dbname=duan1", "root", "");
+                $db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+                
+                // Insert departure
+                $departureSql = "INSERT INTO departures (tour_id, departure_date, return_date, status, min_pax, max_pax) 
+                               VALUES (?, ?, ?, ?, ?, ?)";
+                $departureStmt = $db->prepare($departureSql);
+                $departureStmt->execute([$tour_id, $departure_date, $return_date, $status, $min_pax, $max_pax]);
+                $departure_id = $db->lastInsertId();
+
+                // Link booking to departure
+                $this->booking->addBookingToDeparture($booking_id, $departure_id, $pax_count);
+
+                $_SESSION['message'] = 'Đã tạo đoàn mới và thêm booking thành công!';
+                $_SESSION['message_type'] = 'success';
+                
+                header("Location: index.php?action=booking_detail&id=$booking_id");
+                exit();
+
+            } catch (Exception $e) {
+                $_SESSION['message'] = 'Có lỗi xảy ra: ' . $e->getMessage();
+                $_SESSION['message_type'] = 'error';
+                header("Location: index.php?action=booking_create_new_departure&booking_id=$booking_id");
+                exit();
+            }
         }
     }
 }

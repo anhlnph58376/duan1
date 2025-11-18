@@ -42,7 +42,7 @@
             <hr class="sidebar-divider my-0">
 
             <!-- Nav Item - Dashboard -->
-            <li class="nav-item active">
+            <li class="nav-item">
                 <a class="nav-link" href="<?= BASE_URL ?>">
                     <i class="fas fa-fw fa-tachometer-alt"></i>
                     <span>Dashboard</span></a>
@@ -76,7 +76,7 @@
 
             <hr class="sidebar-divider">
 
-            <li class="nav-item active">
+            <li class="nav-item">
                 <a class="nav-link" href="?action=customers">
                     <span>Quản lý khách hàng</span>
                 </a>
@@ -92,7 +92,7 @@
 
             <hr class="sidebar-divider">
 
-            <li class="nav-item">
+            <li class="nav-item active">
                 <a class="nav-link" href="?action=guides">
                     <span>Quản lý hướng dẫn viên</span>
                 </a>
@@ -119,7 +119,7 @@
         <!-- Content Wrapper -->
         <div id="content-wrapper" class="d-flex flex-column">
 
-            <!-- Main Content -->       
+            <!-- Main Content -->
             <div id="content">
 
                 <!-- Topbar -->
@@ -229,33 +229,33 @@
             <!-- End of Main Content -->
             <div class="container-fluid">
                 <div class="d-sm-flex align-items-center justify-content-between mb-4">
-                    <h1 class="h3 mb-0 text-gray-800">Quản lý khách hàng</h1>
+                    <h1 class="h3 mb-0 text-gray-800">Quản lý hướng dẫn viên</h1>
                 </div>
 
                 <div class="card shadow mb-4">
                     <div class="card-header py-3">
-                        <h6 class="m-0 font-weight-bold text-primary">Chi tiết khách hàng</h6>
+                        <h6 class="m-0 font-weight-bold text-primary">Chi tiết hướng dẫn viên</h6>
                     </div>
                     <div class="card-body">
                         <?php
-                        // Kiểm tra và thoát nếu không có dữ liệu khách hàng
-                        if (!isset($customer)) {
-                            echo '<div class="alert alert-danger">Không tìm thấy thông tin khách hàng.</div>';
+                        // Kiểm tra và thoát nếu không có dữ liệu guide
+                        if (!isset($guide)) {
+                            echo '<div class="alert alert-danger">Không tìm thấy thông tin hướng dẫn viên.</div>';
                             return;
                         }
                         ?>
 
                         <div class="container-fluid mt-4">
                             <div class="d-sm-flex align-items-center justify-content-between mb-4">
-                                <a href="?action=customers" class="btn btn-secondary">
-                                    <i class="fas fa-arrow-left me-2"></i> Quay lại Danh sách Khách hàng
+                                <a href="?action=guides" class="btn btn-secondary">
+                                    <i class="fas fa-arrow-left me-2"></i> Quay lại Danh sách Hướng dẫn viên
                                 </a>
                             </div>
 
                             <div class="card shadow mb-4">
                                 <div class="card-header py-3">
                                     <h1 class="h3 mb-0 text-gray-800">
-                                        <i class="fas fa-user"></i> Chi tiết Khách hàng: <?= htmlspecialchars($customer['name']) ?>
+                                        <i class="fas fa-user"></i> Chi tiết Hướng dẫn viên: <?= htmlspecialchars($guide['name']) ?>
                                     </h1>
                                 </div>
 
@@ -264,10 +264,17 @@
                                         <div class="col-lg-4 mb-4">
                                             <h5 class="text-primary mb-3">Ảnh đại diện</h5>
                                             <div class="text-center">
-                                                <img src="assets/img/undraw_profile_1.svg"
-                                                    alt="Customer Avatar"
-                                                    class="img-fluid rounded-circle shadow-sm"
-                                                    style="max-height: 200px; width: 200px; object-fit: cover;">
+                                                <?php if (!empty($guide['image'])): ?>
+                                                    <img src="<?= htmlspecialchars($guide['image']) ?>"
+                                                        alt="Guide Avatar"
+                                                        class="img-fluid rounded-circle shadow-sm"
+                                                        style="max-height: 200px; width: 200px; object-fit: cover;">
+                                                <?php else: ?>
+                                                    <img src="assets/img/undraw_profile_1.svg"
+                                                        alt="Guide Avatar"
+                                                        class="img-fluid rounded-circle shadow-sm"
+                                                        style="max-height: 200px; width: 200px; object-fit: cover;">
+                                                <?php endif; ?>
                                             </div>
                                         </div>
 
@@ -276,29 +283,38 @@
                                             <ul class="list-group list-group-flush mb-4">
                                                 <li class="list-group-item">
                                                     <strong>ID:</strong>
-                                                    <span class="badge bg-info text-dark">#<?= htmlspecialchars($customer['id']) ?></span>
+                                                    <span class="badge bg-info text-dark">#<?= htmlspecialchars($guide['id']) ?></span>
                                                 </li>
+                                                <?php if (!empty($guide['user_id'])): ?>
                                                 <li class="list-group-item">
-                                                    <strong>Tên khách hàng:</strong>
-                                                    <?= htmlspecialchars($customer['name']) ?>
+                                                    <strong>ID Người dùng:</strong>
+                                                    <span class="badge bg-secondary text-white">#<?= htmlspecialchars($guide['user_id']) ?></span>
+                                                </li>
+                                                <?php endif; ?>
+                                                <li class="list-group-item">
+                                                    <strong>Tên hướng dẫn viên:</strong>
+                                                    <?= htmlspecialchars($guide['name']) ?>
                                                 </li>
                                                 <li class="list-group-item">
                                                     <strong>Số điện thoại:</strong>
-                                                    <span class="text-primary fw-bold"><?= htmlspecialchars($customer['phone']) ?></span>
+                                                    <span class="text-primary fw-bold"><?= htmlspecialchars($guide['phone']) ?></span>
                                                 </li>
                                                 <li class="list-group-item">
                                                     <strong>Email:</strong>
-                                                    <?= !empty($customer['email']) ? '<a href="mailto:' . htmlspecialchars($customer['email']) . '">' . htmlspecialchars($customer['email']) . '</a>' : '<span class="text-muted">Chưa cập nhật</span>' ?>
+                                                    <?= !empty($guide['email']) ? '<a href="mailto:' . htmlspecialchars($guide['email']) . '">' . htmlspecialchars($guide['email']) . '</a>' : '<span class="text-muted">Chưa cập nhật</span>' ?>
                                                 </li>
                                                 <li class="list-group-item">
-                                                    <strong>Địa chỉ:</strong>
-                                                    <?= !empty($customer['address']) ? htmlspecialchars($customer['address']) : '<span class="text-muted">Chưa cập nhật</span>' ?>
+                                                    <strong>Trạng thái:</strong>
+                                                    <span class="badge badge-<?= $guide['status'] == 'Active' ? 'success' : ($guide['status'] == 'Inactive' ? 'secondary' : 'warning') ?>">
+                                                        <?= htmlspecialchars($guide['status']) ?>
+                                                    </span>
                                                 </li>
                                             </ul>
 
-                                            <h5 class="text-primary mt-4 mb-3">Lịch sử Giao dịch & Ghi chú</h5>
+                                            <h5 class="text-primary mt-4 mb-3">Thông tin Chuyên môn</h5>
                                             <div class="p-3 bg-light rounded border">
-                                                <?= !empty($customer['history_notes']) ? nl2br(htmlspecialchars($customer['history_notes'])) : '<span class="text-muted">Chưa có ghi chú nào</span>' ?>
+                                                <strong>Giấy phép:</strong><br>
+                                                <?= !empty($guide['license_info']) ? nl2br(htmlspecialchars($guide['license_info'])) : '<span class="text-muted">Chưa có thông tin giấy phép</span>' ?>
                                             </div>
                                         </div>
                                     </div>
@@ -306,11 +322,11 @@
                                     <hr class="my-4">
 
                                     <div class="d-flex justify-content-end">
-                                        <a href="?action=customer_edit&id=<?= $customer['id'] ?>" class="btn btn-primary me-2">
-                                            <i class="fas fa-edit"></i> Chỉnh sửa Khách hàng
+                                        <a href="?action=guide_edit&id=<?= $guide['id'] ?>" class="btn btn-primary me-2">
+                                            <i class="fas fa-edit"></i> Chỉnh sửa Hướng dẫn viên
                                         </a>
-                                        <a href="?action=customer_delete&id=<?= $customer['id'] ?>" class="btn btn-danger">
-                                            <i class="fas fa-trash"></i> Xóa Khách hàng
+                                        <a href="?action=guide_delete&id=<?= $guide['id'] ?>" class="btn btn-danger">
+                                            <i class="fas fa-trash"></i> Xóa Hướng dẫn viên
                                         </a>
                                     </div>
                                 </div>
@@ -345,9 +361,9 @@
         aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">Ready to Leave?</h5>
-                    <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Ready to Leave?</h5>
+                <button class="close" type="button" data-dismiss="modal" aria-label="Close">
                 <span aria-hidden="true">×</span>
             </button>
         </div>

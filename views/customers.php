@@ -93,8 +93,8 @@
             <hr class="sidebar-divider">
 
             <li class="nav-item">
-                <a class="nav-link" href="#">
-                    <span>Quản lý hưỡng dẫn viên</span>
+                <a class="nav-link" href="?action=guides">
+                    <span>Quản lý hướng dẫn viên</span>
                 </a>
             </li>
 
@@ -194,8 +194,7 @@
                             <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button"
                                 data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                 <span class="mr-2 d-none d-lg-inline text-gray-600 small">Douglas McGee</span>
-                                <img class="img-profile rounded-circle"
-                                    src="assets/img/undraw_profile.svg">
+                                <img class="img-profile rounded-circle" src="assets/img/undraw_profile.svg">
                             </a>
                             <!-- Dropdown - User Information -->
                             <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in"
@@ -253,25 +252,29 @@
                                 </thead>
                                 <tbody>
                                     <?php foreach ($customers as $customer) { ?>
-                                        <tr>
-                                            <td><?= $customer['id'] ?></td>
-                                            <td><?= $customer['name'] ?></td>
-                                            <td><?= $customer['phone'] ?></td>
-                                            <td><?= $customer['email'] ?? 'N/A' ?></td>
-                                            <td><?= $customer['address'] ?? 'N/A' ?></td>
-                                            <td><?= substr($customer['history_notes'] ?? '', 0, 50) ?><?= strlen($customer['history_notes'] ?? '') > 50 ? '...' : '' ?></td>
-                                            <td class="align-middle">
-                                                <a href="?action=customer_edit&id=<?= $customer['id'] ?>" class="btn btn-primary btn-circle btn-sm">
-                                                    <i class="fas fa-edit"></i>
-                                                </a>
-                                                <a href="?action=customer_delete&id=<?= $customer['id'] ?>" class="btn btn-danger btn-circle btn-sm">
-                                                    <i class="fas fa-trash"></i>
-                                                </a>
-                                                <a href="?action=customer_detail&id=<?= $customer['id'] ?>" class="btn btn-info btn-circle btn-sm">
-                                                    <i class="fas fa-search"></i>
-                                                </a>
-                                            </td>
-                                        </tr>
+                                    <tr>
+                                        <td><?= $customer['id'] ?></td>
+                                        <td><?= $customer['name'] ?></td>
+                                        <td><?= $customer['phone'] ?></td>
+                                        <td><?= $customer['email'] ?? 'N/A' ?></td>
+                                        <td><?= $customer['address'] ?? 'N/A' ?></td>
+                                        <td><?= substr($customer['history_notes'] ?? '', 0, 50) ?><?= strlen($customer['history_notes'] ?? '') > 50 ? '...' : '' ?>
+                                        </td>
+                                        <td class="align-middle">
+                                            <a href="?action=customer_edit&id=<?= $customer['id'] ?>"
+                                                class="btn btn-primary btn-circle btn-sm">
+                                                <i class="fas fa-edit"></i>
+                                            </a>
+                                            <a href="?action=customer_delete&id=<?= $customer['id'] ?>"
+                                                class="btn btn-danger btn-circle btn-sm">
+                                                <i class="fas fa-trash"></i>
+                                            </a>
+                                            <a href="?action=customer_detail&id=<?= $customer['id'] ?>"
+                                                class="btn btn-info btn-circle btn-sm">
+                                                <i class="fas fa-search"></i>
+                                            </a>
+                                        </td>
+                                    </tr>
                                     <?php } ?>
                                 </tbody>
                             </table>

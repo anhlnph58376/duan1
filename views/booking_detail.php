@@ -111,6 +111,10 @@ endif;
                                         <a href="?action=booking_edit&id=<?= $booking['id'] ?>" class="btn btn-primary">
                                             <i class="fas fa-edit"></i> Chỉnh sửa
                                         </a>
+                                        <a href="?action=booking_create_new_departure&booking_id=<?= $booking['id'] ?>" 
+                                           class="btn btn-success">
+                                            <i class="fas fa-plane-departure"></i> Tạo đoàn mới
+                                        </a>
                                         <a href="?action=booking_delete&id=<?= $booking['id'] ?>" class="btn btn-danger"
                                             onclick="return confirm('Bạn có chắc chắn muốn xóa?')">
                                             <i class="fas fa-trash"></i> Xóa
