@@ -1,6 +1,4 @@
 <?php
-
-// Sao chép HomeController vào models/ để tương thích autoload
 class HomeController
 {
     public $tours;
