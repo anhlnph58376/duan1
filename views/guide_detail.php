@@ -11,13 +11,13 @@
 
     <title></title>
 
-    <!-- Phông chữ tùy chỉnh cho template này-->
+    <!-- Custom fonts for this template-->
     <link href="assets/vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
     <link
         href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i"
         rel="stylesheet">
 
-    <!-- Styles tùy chỉnh cho template này-->
+    <!-- Custom styles for this template-->
     <link href="assets/css/sb-admin-2.min.css" rel="stylesheet">
 
 </head>
@@ -42,7 +42,7 @@
             <hr class="sidebar-divider my-0">
 
             <!-- Nav Item - Dashboard -->
-            <li class="nav-item active">
+            <li class="nav-item">
                 <a class="nav-link" href="<?= BASE_URL ?>">
                     <i class="fas fa-fw fa-tachometer-alt"></i>
                     <span>Dashboard</span></a>
@@ -76,7 +76,7 @@
 
             <hr class="sidebar-divider">
 
-            <li class="nav-item active">
+            <li class="nav-item">
                 <a class="nav-link" href="?action=customers">
                     <span>Quản lý khách hàng</span>
                 </a>
@@ -92,7 +92,7 @@
 
             <hr class="sidebar-divider">
 
-            <li class="nav-item">
+            <li class="nav-item active">
                 <a class="nav-link" href="?action=guides">
                     <span>Quản lý hướng dẫn viên</span>
                 </a>
@@ -229,52 +229,108 @@
             <!-- End of Main Content -->
             <div class="container-fluid">
                 <div class="d-sm-flex align-items-center justify-content-between mb-4">
-                    <h1 class="h3 mb-0 text-gray-800">Quản lý khách hàng</h1>
+                    <h1 class="h3 mb-0 text-gray-800">Quản lý hướng dẫn viên</h1>
                 </div>
 
                 <div class="card shadow mb-4">
-                    <div class="card-header py-3 d-flex justify-content-between align-items-center">
-                        <h6 class="m-0 font-weight-bold text-primary">Danh sách khách hàng</h6>
-                        <a href="?action=customer_add" class="btn btn-primary">Thêm khách hàng</a>
+                    <div class="card-header py-3">
+                        <h6 class="m-0 font-weight-bold text-primary">Chi tiết hướng dẫn viên</h6>
                     </div>
                     <div class="card-body">
-                        <div class="table-responsive">
-                            <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
-                                <thead>
-                                    <tr>
-                                        <th>ID</th>
-                                        <th>Tên khách hàng</th>
-                                        <th>Số điện thoại</th>
-                                        <th>Email</th>
-                                        <th>Địa chỉ</th>
-                                        <th>Ghi chú lịch sử</th>
-                                        <th>Thao tác</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <?php foreach ($customers as $customer) { ?>
-                                        <tr>
-                                            <td><?= $customer['id'] ?></td>
-                                            <td><?= $customer['name'] ?></td>
-                                            <td><?= $customer['phone'] ?></td>
-                                            <td><?= $customer['email'] ?? 'N/A' ?></td>
-                                            <td><?= $customer['address'] ?? 'N/A' ?></td>
-                                            <td><?= substr($customer['history_notes'] ?? '', 0, 50) ?><?= strlen($customer['history_notes'] ?? '') > 50 ? '...' : '' ?></td>
-                                            <td class="align-middle">
-                                                <a href="?action=customer_edit&id=<?= $customer['id'] ?>" class="btn btn-primary btn-circle btn-sm">
-                                                    <i class="fas fa-edit"></i>
-                                                </a>
-                                                <a href="?action=customer_delete&id=<?= $customer['id'] ?>" class="btn btn-danger btn-circle btn-sm">
-                                                    <i class="fas fa-trash"></i>
-                                                </a>
-                                                <a href="?action=customer_detail&id=<?= $customer['id'] ?>" class="btn btn-info btn-circle btn-sm">
-                                                    <i class="fas fa-search"></i>
-                                                </a>
-                                            </td>
-                                        </tr>
-                                    <?php } ?>
-                                </tbody>
-                            </table>
+                        <?php
+                        // Kiểm tra và thoát nếu không có dữ liệu guide
+                        if (!isset($guide)) {
+                            echo '<div class="alert alert-danger">Không tìm thấy thông tin hướng dẫn viên.</div>';
+                            return;
+                        }
+                        ?>
+
+                        <div class="container-fluid mt-4">
+                            <div class="d-sm-flex align-items-center justify-content-between mb-4">
+                                <a href="?action=guides" class="btn btn-secondary">
+                                    <i class="fas fa-arrow-left me-2"></i> Quay lại Danh sách Hướng dẫn viên
+                                </a>
+                            </div>
+
+                            <div class="card shadow mb-4">
+                                <div class="card-header py-3">
+                                    <h1 class="h3 mb-0 text-gray-800">
+                                        <i class="fas fa-user"></i> Chi tiết Hướng dẫn viên: <?= htmlspecialchars($guide['name']) ?>
+                                    </h1>
+                                </div>
+
+                                <div class="card-body">
+                                    <div class="row">
+                                        <div class="col-lg-4 mb-4">
+                                            <h5 class="text-primary mb-3">Ảnh đại diện</h5>
+                                            <div class="text-center">
+                                                <?php if (!empty($guide['image'])): ?>
+                                                    <img src="<?= htmlspecialchars($guide['image']) ?>"
+                                                        alt="Guide Avatar"
+                                                        class="img-fluid rounded-circle shadow-sm"
+                                                        style="max-height: 200px; width: 200px; object-fit: cover;">
+                                                <?php else: ?>
+                                                    <img src="assets/img/undraw_profile_1.svg"
+                                                        alt="Guide Avatar"
+                                                        class="img-fluid rounded-circle shadow-sm"
+                                                        style="max-height: 200px; width: 200px; object-fit: cover;">
+                                                <?php endif; ?>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-lg-8">
+                                            <h5 class="text-primary mb-3">Thông tin Cá nhân</h5>
+                                            <ul class="list-group list-group-flush mb-4">
+                                                <li class="list-group-item">
+                                                    <strong>ID:</strong>
+                                                    <span class="badge bg-info text-dark">#<?= htmlspecialchars($guide['id']) ?></span>
+                                                </li>
+                                                <?php if (!empty($guide['user_id'])): ?>
+                                                <li class="list-group-item">
+                                                    <strong>ID Người dùng:</strong>
+                                                    <span class="badge bg-secondary text-white">#<?= htmlspecialchars($guide['user_id']) ?></span>
+                                                </li>
+                                                <?php endif; ?>
+                                                <li class="list-group-item">
+                                                    <strong>Tên hướng dẫn viên:</strong>
+                                                    <?= htmlspecialchars($guide['name']) ?>
+                                                </li>
+                                                <li class="list-group-item">
+                                                    <strong>Số điện thoại:</strong>
+                                                    <span class="text-primary fw-bold"><?= htmlspecialchars($guide['phone']) ?></span>
+                                                </li>
+                                                <li class="list-group-item">
+                                                    <strong>Email:</strong>
+                                                    <?= !empty($guide['email']) ? '<a href="mailto:' . htmlspecialchars($guide['email']) . '">' . htmlspecialchars($guide['email']) . '</a>' : '<span class="text-muted">Chưa cập nhật</span>' ?>
+                                                </li>
+                                                <li class="list-group-item">
+                                                    <strong>Trạng thái:</strong>
+                                                    <span class="badge badge-<?= $guide['status'] == 'Active' ? 'success' : ($guide['status'] == 'Inactive' ? 'secondary' : 'warning') ?>">
+                                                        <?= htmlspecialchars($guide['status']) ?>
+                                                    </span>
+                                                </li>
+                                            </ul>
+
+                                            <h5 class="text-primary mt-4 mb-3">Thông tin Chuyên môn</h5>
+                                            <div class="p-3 bg-light rounded border">
+                                                <strong>Giấy phép:</strong><br>
+                                                <?= !empty($guide['license_info']) ? nl2br(htmlspecialchars($guide['license_info'])) : '<span class="text-muted">Chưa có thông tin giấy phép</span>' ?>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <hr class="my-4">
+
+                                    <div class="d-flex justify-content-end">
+                                        <a href="?action=guide_edit&id=<?= $guide['id'] ?>" class="btn btn-primary me-2">
+                                            <i class="fas fa-edit"></i> Chỉnh sửa Hướng dẫn viên
+                                        </a>
+                                        <a href="?action=guide_delete&id=<?= $guide['id'] ?>" class="btn btn-danger">
+                                            <i class="fas fa-trash"></i> Xóa Hướng dẫn viên
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -305,37 +361,36 @@
         aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">Ready to Leave?</h5>
-                    <button class="close" type="button" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">×</span>
-                    </button>
-                </div>
-                <div class="modal-body">Select "Logout" below if you are ready to end your current session.</div>
-                <div class="modal-footer">
-                    <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
-                    <a class="btn btn-primary" href="login.html">Logout</a>
-                </div>
-            </div>
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Ready to Leave?</h5>
+                <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">×</span>
+            </button>
+        </div>
+        <div class="modal-body">Select "Logout" below if you are ready to end your current session.</div>
+        <div class="modal-footer">
+            <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
+            <a class="btn btn-primary" href="login.html">Logout</a>
         </div>
     </div>
+</div>
 
-    <!-- Bootstrap core JavaScript-->
-    <script src="assets/vendor/jquery/jquery.min.js"></script>
-    <script src="assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+<!-- Bootstrap core JavaScript-->
+<script src="assets/vendor/jquery/jquery.min.js"></script>
+<script src="assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
 
-    <!-- Core plugin JavaScript-->
-    <script src="assets/vendor/jquery-easing/jquery.easing.min.js"></script>
+<!-- Core plugin JavaScript-->
+<script src="assets/vendor/jquery-easing/jquery.easing.min.js"></script>
 
-    <!-- Custom scripts for all pages-->
-    <script src="assets/js/sb-admin-2.min.js"></script>
+<!-- Custom scripts for all pages-->
+<script src="assets/js/sb-admin-2.min.js"></script>
 
-    <!-- Page level plugins -->
-    <script src="assets/vendor/chart.js/Chart.min.js"></script>
+<!-- Page level plugins -->
+<script src="assets/vendor/chart.js/Chart.min.js"></script>
 
-    <!-- Page level custom scripts -->
-    <script src="assets/js/demo/chart-area-demo.js"></script>
-    <script src="assets/js/demo/chart-pie-demo.js"></script>
+<!-- Page level custom scripts -->
+<script src="assets/js/demo/chart-area-demo.js"></script>
+<script src="assets/js/demo/chart-pie-demo.js"></script>
 
 </body>
 

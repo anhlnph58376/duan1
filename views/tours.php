@@ -91,9 +91,9 @@
 
             <hr class="sidebar-divider">
 
-            <li class="nav-item active">
-                <a class="nav-link" href="#">
-                    <span>Quản lý hưỡng dẫn viên</span>
+            <li class="nav-item">
+                <a class="nav-link" href="?action=guides">
+                    <span>Quản lý hướng dẫn viên</span>
                 </a>
             </li>
 

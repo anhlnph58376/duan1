@@ -1,3 +1,16 @@
+<?php if (isset($_SESSION['error_phone'])): ?>
+    <div class="alert alert-danger mb-4" role="alert">
+        <?= $_SESSION['error_phone'] ?>
+    </div>
+<?php
+    // Xóa session lỗi ngay sau khi hiển thị
+    unset($_SESSION['error_phone']);
+endif;
+
+// Lấy dữ liệu cũ (nếu có)
+$old_data = $_SESSION['old_data'] ?? [];
+unset($_SESSION['old_data']); // Xóa sau khi lấy ra
+?>
 <!DOCTYPE html>
 <html lang="vi">
 
@@ -11,13 +24,13 @@
 
     <title></title>
 
-    <!-- Phông chữ tùy chỉnh cho template này-->
+    <!-- Custom fonts for this template-->
     <link href="assets/vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
     <link
         href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i"
         rel="stylesheet">
 
-    <!-- Styles tùy chỉnh cho template này-->
+    <!-- Custom styles for this template-->
     <link href="assets/css/sb-admin-2.min.css" rel="stylesheet">
 
 </head>
@@ -42,7 +55,7 @@
             <hr class="sidebar-divider my-0">
 
             <!-- Nav Item - Dashboard -->
-            <li class="nav-item active">
+            <li class="nav-item">
                 <a class="nav-link" href="<?= BASE_URL ?>">
                     <i class="fas fa-fw fa-tachometer-alt"></i>
                     <span>Dashboard</span></a>
@@ -76,7 +89,7 @@
 
             <hr class="sidebar-divider">
 
-            <li class="nav-item active">
+            <li class="nav-item">
                 <a class="nav-link" href="?action=customers">
                     <span>Quản lý khách hàng</span>
                 </a>
@@ -92,7 +105,7 @@
 
             <hr class="sidebar-divider">
 
-            <li class="nav-item">
+            <li class="nav-item active">
                 <a class="nav-link" href="?action=guides">
                     <span>Quản lý hướng dẫn viên</span>
                 </a>
@@ -229,53 +242,55 @@
             <!-- End of Main Content -->
             <div class="container-fluid">
                 <div class="d-sm-flex align-items-center justify-content-between mb-4">
-                    <h1 class="h3 mb-0 text-gray-800">Quản lý khách hàng</h1>
+                    <h1 class="h3 mb-0 text-gray-800">Quản lý hướng dẫn viên</h1>
                 </div>
 
                 <div class="card shadow mb-4">
-                    <div class="card-header py-3 d-flex justify-content-between align-items-center">
-                        <h6 class="m-0 font-weight-bold text-primary">Danh sách khách hàng</h6>
-                        <a href="?action=customer_add" class="btn btn-primary">Thêm khách hàng</a>
+                    <div class="card-header py-3">
+                        <h6 class="m-0 font-weight-bold text-primary">Thêm hướng dẫn viên</h6>
                     </div>
                     <div class="card-body">
-                        <div class="table-responsive">
-                            <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
-                                <thead>
-                                    <tr>
-                                        <th>ID</th>
-                                        <th>Tên khách hàng</th>
-                                        <th>Số điện thoại</th>
-                                        <th>Email</th>
-                                        <th>Địa chỉ</th>
-                                        <th>Ghi chú lịch sử</th>
-                                        <th>Thao tác</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <?php foreach ($customers as $customer) { ?>
-                                        <tr>
-                                            <td><?= $customer['id'] ?></td>
-                                            <td><?= $customer['name'] ?></td>
-                                            <td><?= $customer['phone'] ?></td>
-                                            <td><?= $customer['email'] ?? 'N/A' ?></td>
-                                            <td><?= $customer['address'] ?? 'N/A' ?></td>
-                                            <td><?= substr($customer['history_notes'] ?? '', 0, 50) ?><?= strlen($customer['history_notes'] ?? '') > 50 ? '...' : '' ?></td>
-                                            <td class="align-middle">
-                                                <a href="?action=customer_edit&id=<?= $customer['id'] ?>" class="btn btn-primary btn-circle btn-sm">
-                                                    <i class="fas fa-edit"></i>
-                                                </a>
-                                                <a href="?action=customer_delete&id=<?= $customer['id'] ?>" class="btn btn-danger btn-circle btn-sm">
-                                                    <i class="fas fa-trash"></i>
-                                                </a>
-                                                <a href="?action=customer_detail&id=<?= $customer['id'] ?>" class="btn btn-info btn-circle btn-sm">
-                                                    <i class="fas fa-search"></i>
-                                                </a>
-                                            </td>
-                                        </tr>
-                                    <?php } ?>
-                                </tbody>
-                            </table>
-                        </div>
+                        <form action="?action=addGuide" method="POST">
+
+                            <div class="mb-3">
+                                <label for="name" class="form-label">Tên hướng dẫn viên:</label>
+                                <input type="text" class="form-control" id="name" name="name" value="<?= $old_data['name'] ?? '' ?>" required>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="phone" class="form-label">Số điện thoại:</label>
+                                <input type="text" class="form-control" id="phone" name="phone" value="<?= $old_data['phone'] ?? '' ?>" required>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="email" class="form-label">Email:</label>
+                                <input type="email" class="form-control" id="email" name="email" value="<?= $old_data['email'] ?? '' ?>">
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="license_info" class="form-label">Thông tin giấy phép:</label>
+                                <textarea class="form-control" id="license_info" name="license_info" rows="3"><?= $old_data['license_info'] ?? '' ?></textarea>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="image" class="form-label">Hình ảnh:</label>
+                                <input type="text" class="form-control" id="image" name="image" value="<?= $old_data['image'] ?? '' ?>" placeholder="Đường dẫn hình ảnh">
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="status" class="form-label">Trạng thái:</label>
+                                <select class="form-control" id="status" name="status">
+                                    <option value="Active" <?= ($old_data['status'] ?? 'Active') == 'Active' ? 'selected' : '' ?>>Active</option>
+                                    <option value="Inactive" <?= ($old_data['status'] ?? '') == 'Inactive' ? 'selected' : '' ?>>Inactive</option>
+                                    <option value="Busy" <?= ($old_data['status'] ?? '') == 'Busy' ? 'selected' : '' ?>>Busy</option>
+                                </select>
+                            </div>
+
+                            <div class="d-flex justify-content-end">
+                                <a href="?action=guides" class="btn btn-secondary me-2">Hủy bỏ</a>
+                                <button type="submit" class="btn btn-primary">Thêm hướng dẫn viên</button>
+                            </div>
+                        </form>
                     </div>
                 </div>
             </div>
@@ -283,7 +298,7 @@
             <footer class="sticky-footer bg-white">
                 <div class="container my-auto">
                     <div class="copyright text-center my-auto">
-                        <span>Copyright &copy; Your Website 2021</span>
+                        <span>Nhóm 1: &copy; Cao Đẳng FPT Polytechnic</span>
                     </div>
                 </div>
             </footer>

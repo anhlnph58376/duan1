@@ -42,7 +42,7 @@
             <hr class="sidebar-divider my-0">
 
             <!-- Nav Item - Dashboard -->
-            <li class="nav-item active">
+            <li class="nav-item">
                 <a class="nav-link" href="<?= BASE_URL ?>">
                     <i class="fas fa-fw fa-tachometer-alt"></i>
                     <span>Dashboard</span></a>
@@ -76,7 +76,7 @@
 
             <hr class="sidebar-divider">
 
-            <li class="nav-item active">
+            <li class="nav-item">
                 <a class="nav-link" href="?action=customers">
                     <span>Quản lý khách hàng</span>
                 </a>
@@ -92,7 +92,7 @@
 
             <hr class="sidebar-divider">
 
-            <li class="nav-item">
+            <li class="nav-item active">
                 <a class="nav-link" href="?action=guides">
                     <span>Quản lý hướng dẫn viên</span>
                 </a>
@@ -229,13 +229,13 @@
             <!-- End of Main Content -->
             <div class="container-fluid">
                 <div class="d-sm-flex align-items-center justify-content-between mb-4">
-                    <h1 class="h3 mb-0 text-gray-800">Quản lý khách hàng</h1>
+                    <h1 class="h3 mb-0 text-gray-800">Quản lý hướng dẫn viên</h1>
                 </div>
 
                 <div class="card shadow mb-4">
                     <div class="card-header py-3 d-flex justify-content-between align-items-center">
-                        <h6 class="m-0 font-weight-bold text-primary">Danh sách khách hàng</h6>
-                        <a href="?action=customer_add" class="btn btn-primary">Thêm khách hàng</a>
+                        <h6 class="m-0 font-weight-bold text-primary">Danh sách hướng dẫn viên</h6>
+                        <a href="?action=guide_add" class="btn btn-primary">Thêm hướng dẫn viên</a>
                     </div>
                     <div class="card-body">
                         <div class="table-responsive">
@@ -243,31 +243,35 @@
                                 <thead>
                                     <tr>
                                         <th>ID</th>
-                                        <th>Tên khách hàng</th>
+                                        <th>Tên hướng dẫn viên</th>
                                         <th>Số điện thoại</th>
                                         <th>Email</th>
-                                        <th>Địa chỉ</th>
-                                        <th>Ghi chú lịch sử</th>
+                                        <th>Giấy phép</th>
+                                        <th>Trạng thái</th>
                                         <th>Thao tác</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <?php foreach ($customers as $customer) { ?>
+                                    <?php foreach ($guides as $guide) { ?>
                                         <tr>
-                                            <td><?= $customer['id'] ?></td>
-                                            <td><?= $customer['name'] ?></td>
-                                            <td><?= $customer['phone'] ?></td>
-                                            <td><?= $customer['email'] ?? 'N/A' ?></td>
-                                            <td><?= $customer['address'] ?? 'N/A' ?></td>
-                                            <td><?= substr($customer['history_notes'] ?? '', 0, 50) ?><?= strlen($customer['history_notes'] ?? '') > 50 ? '...' : '' ?></td>
+                                            <td><?= $guide['id'] ?></td>
+                                            <td><?= $guide['name'] ?></td>
+                                            <td><?= $guide['phone'] ?></td>
+                                            <td><?= $guide['email'] ?? 'N/A' ?></td>
+                                            <td><?= $guide['license_info'] ?? 'N/A' ?></td>
+                                            <td>
+                                                <span class="badge badge-<?= $guide['status'] == 'Active' ? 'success' : ($guide['status'] == 'Inactive' ? 'secondary' : 'warning') ?>">
+                                                    <?= $guide['status'] ?>
+                                                </span>
+                                            </td>
                                             <td class="align-middle">
-                                                <a href="?action=customer_edit&id=<?= $customer['id'] ?>" class="btn btn-primary btn-circle btn-sm">
+                                                <a href="?action=guide_edit&id=<?= $guide['id'] ?>" class="btn btn-primary btn-circle btn-sm">
                                                     <i class="fas fa-edit"></i>
                                                 </a>
-                                                <a href="?action=customer_delete&id=<?= $customer['id'] ?>" class="btn btn-danger btn-circle btn-sm">
+                                                <a href="?action=guide_delete&id=<?= $guide['id'] ?>" class="btn btn-danger btn-circle btn-sm">
                                                     <i class="fas fa-trash"></i>
                                                 </a>
-                                                <a href="?action=customer_detail&id=<?= $customer['id'] ?>" class="btn btn-info btn-circle btn-sm">
+                                                <a href="?action=guide_detail&id=<?= $guide['id'] ?>" class="btn btn-info btn-circle btn-sm">
                                                     <i class="fas fa-search"></i>
                                                 </a>
                                             </td>

@@ -93,8 +93,8 @@
             <hr class="sidebar-divider">
 
             <li class="nav-item">
-                <a class="nav-link" href="#">
-                    <span>Quản lý hưỡng dẫn viên</span>
+                <a class="nav-link" href="?action=guides">
+                    <span>Quản lý hướng dẫn viên</span>
                 </a>
             </li>
 
@@ -119,7 +119,7 @@
         <!-- Content Wrapper -->
         <div id="content-wrapper" class="d-flex flex-column">
 
-            <!-- Main Content -->
+            <!-- Main Content -->       
             <div id="content">
 
                 <!-- Topbar -->
