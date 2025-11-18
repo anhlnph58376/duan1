@@ -238,7 +238,7 @@
                     </div>
                     <div class="card-body">
                         <?php
-                        // Kiểm tra và thoát nếu không có dữ liệu customer
+                        // Kiểm tra và thoát nếu không có dữ liệu khách hàng
                         if (!isset($customer)) {
                             echo '<div class="alert alert-danger">Không tìm thấy thông tin khách hàng.</div>';
                             return;

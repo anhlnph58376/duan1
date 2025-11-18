@@ -35,10 +35,6 @@ $data = !empty($old_data) ? $old_data : $booking;
 
     <!-- Custom styles for this template-->
     <link href="assets/css/sb-admin-2.min.css" rel="stylesheet">
-<<<<<<< HEAD
-
-=======
->>>>>>> 7e6d6296c31abfa1830c67d2af529c7f9fc3ab5f
 </head>
 
 <body id="page-top">
@@ -46,48 +42,7 @@ $data = !empty($old_data) ? $old_data : $booking;
     <!-- Page Wrapper -->
     <div id="wrapper">
 
-        <!-- Sidebar -->
-        <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
-
-            <!-- Sidebar - Brand -->
-            <a class="sidebar-brand d-flex align-items-center justify-content-center" href="<?= BASE_URL ?>">
-                <div class="sidebar-brand-icon rotate-n-15">
-                    <i class="fas fa-laugh-wink"></i>
-                </div>
-                <div class="sidebar-brand-text mx-3">SB Admin <sup>2</sup></div>
-            </a>
-
-            <!-- Divider -->
-            <hr class="sidebar-divider my-0">
-
-            <!-- Nav Item - Dashboard -->
-            <li class="nav-item">
-                <a class="nav-link" href="<?= BASE_URL ?>">
-                    <i class="fas fa-fw fa-tachometer-alt"></i>
-                    <span>Dashboard</span></a>
-            </li>
-
-            <!-- Divider -->
-            <hr class="sidebar-divider">
-
-            <!-- Nav Item - Tours -->
-            <li class="nav-item">
-                <a class="nav-link" href="?action=tours">
-                    <i class="fas fa-fw fa-table"></i>
-                    <span>Quản lý tour</span>
-                </a>
-            </li>
-
-            <!-- Nav Item - Bookings -->
-            <li class="nav-item active">
-                <a class="nav-link" href="?action=bookings">
-                    <i class="fas fa-fw fa-book"></i>
-                    <span>Quản lý booking</span>
-                </a>
-            </li>
-
-        </ul>
-        <!-- End of Sidebar -->
+        <?php include 'views/includes/sidebar.php'; ?>
 
         <!-- Content Wrapper -->
         <div id="content-wrapper" class="d-flex flex-column">

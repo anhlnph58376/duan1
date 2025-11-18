@@ -254,4 +254,100 @@ class Booking extends BaseModel
             return false;
         }
     }
+
+    /**
+     * Lấy tất cả booking với thông tin departure đã tham gia
+     */
+    public function getAllBookingsWithDepartures() {
+        try {
+            $sql = "SELECT b.*, c.name as customer_name, c.phone as customer_phone, c.email as customer_email,
+                           GROUP_CONCAT(db.departure_id) as departure_ids
+                    FROM bookings b 
+                    LEFT JOIN customers c ON b.customer_id = c.id
+                    LEFT JOIN departure_bookings db ON b.id = db.booking_id
+                    GROUP BY b.id
+                    ORDER BY b.id DESC";
+            
+            $stmt = $this->pdo->prepare($sql);
+            $stmt->execute();
+            $bookings = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            
+            // Thêm thông tin departure cho mỗi booking
+            foreach ($bookings as &$booking) {
+                $booking['departures'] = [];
+                if (!empty($booking['departure_ids'])) {
+                    $departureIds = explode(',', $booking['departure_ids']);
+                    foreach ($departureIds as $depId) {
+                        $booking['departures'][] = ['departure_id' => $depId];
+                    }
+                }
+            }
+            
+            return $bookings;
+            
+        } catch (PDOException $e) {
+            return $this->getAllBookings(); // Fallback
+        }
+    }
+
+    /**
+     * Lấy danh sách departure có thể tham gia
+     */
+    public function getAvailableDepartures() {
+        try {
+            $sql = "SELECT d.id, d.departure_date, d.return_date, d.status, d.max_pax,
+                           t.name as tour_name,
+                           COUNT(db.booking_id) as current_bookings
+                    FROM departures d
+                    LEFT JOIN tour_versions tv ON d.tour_version_id = tv.id
+                    LEFT JOIN tours t ON tv.tour_id = t.id
+                    LEFT JOIN departure_bookings db ON d.id = db.departure_id
+                    WHERE d.status = 'Scheduled' 
+                    AND d.departure_date > NOW()
+                    GROUP BY d.id
+                    HAVING (d.max_pax IS NULL OR current_bookings < d.max_pax)
+                    ORDER BY d.departure_date ASC";
+            
+            $stmt = $this->pdo->prepare($sql);
+            $stmt->execute();
+            return $stmt->fetchAll(PDO::FETCH_ASSOC);
+            
+        } catch (PDOException $e) {
+            return [];
+        }
+    }
+
+    /**
+     * Thêm booking vào departure
+     */
+    public function addBookingToDeparture($booking_id, $departure_id, $pax_count) {
+        try {
+            // Kiểm tra xem booking đã có trong departure này chưa
+            $checkSql = "SELECT COUNT(*) FROM departure_bookings 
+                        WHERE booking_id = :booking_id AND departure_id = :departure_id";
+            $checkStmt = $this->pdo->prepare($checkSql);
+            $checkStmt->execute([
+                ':booking_id' => $booking_id,
+                ':departure_id' => $departure_id
+            ]);
+            
+            if ($checkStmt->fetchColumn() > 0) {
+                return false; // Đã tồn tại
+            }
+            
+            // Thêm vào departure_bookings
+            $sql = "INSERT INTO departure_bookings (departure_id, booking_id, pax_count) 
+                   VALUES (:departure_id, :booking_id, :pax_count)";
+            
+            $stmt = $this->pdo->prepare($sql);
+            return $stmt->execute([
+                ':departure_id' => $departure_id,
+                ':booking_id' => $booking_id,
+                ':pax_count' => $pax_count
+            ]);
+            
+        } catch (PDOException $e) {
+            return false;
+        }
+    }
 }

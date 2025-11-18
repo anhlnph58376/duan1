@@ -49,56 +49,7 @@ endif;
     <!-- Page Wrapper -->
     <div id="wrapper">
 
-        <!-- Sidebar -->
-        <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
-
-            <!-- Sidebar - Brand -->
-            <a class="sidebar-brand d-flex align-items-center justify-content-center" href="<?= BASE_URL ?>">
-                <div class="sidebar-brand-icon rotate-n-15">
-                    <i class="fas fa-laugh-wink"></i>
-                </div>
-                <div class="sidebar-brand-text mx-3">SB Admin <sup>2</sup></div>
-            </a>
-
-            <!-- Divider -->
-            <hr class="sidebar-divider my-0">
-
-            <!-- Nav Item - Dashboard -->
-            <li class="nav-item">
-                <a class="nav-link" href="<?= BASE_URL ?>">
-                    <i class="fas fa-fw fa-tachometer-alt"></i>
-                    <span>Dashboard</span></a>
-            </li>
-
-            <!-- Divider -->
-            <hr class="sidebar-divider">
-
-            <!-- Nav Item - Tours -->
-            <li class="nav-item">
-                <a class="nav-link" href="?action=tours">
-                    <i class="fas fa-fw fa-map-marked-alt"></i>
-                    <span>Quản lý tour</span>
-                </a>
-            </li>
-
-            <hr class="sidebar-divider">
-
-            <li class="nav-item active">
-                <a class="nav-link" href="?action=bookings">
-                    <i class="fas fa-fw fa-calendar-check"></i>
-                    <span>Quản lý booking</span>
-                </a>
-            </li>
-
-            <!-- Divider -->
-            <hr class="sidebar-divider d-none d-md-block">
-
-            <!-- Sidebar Toggler (Sidebar) -->
-            <div class="text-center d-none d-md-inline">
-                <button class="rounded-circle border-0" id="sidebarToggle"></button>
-            </div>
-
-        </ul>
+        <?php include 'views/includes/sidebar.php'; ?>
         <!-- End of Sidebar -->
 
         <!-- Content Wrapper -->
@@ -230,8 +181,8 @@ endif;
                                             <div class="col-md-6">
                                                 <div class="form-group">
                                                     <label for="total_amount">Tổng tiền <span class="text-danger">*</span></label>
-                                                    <input type="number" class="form-control" id="total_amount" name="total_amount" 
-                                                           min="0" step="1000" required
+                                                    <input type="text" class="form-control" id="total_amount" name="total_amount" 
+                                                            required
                                                            value="<?= $data['total_amount'] ?? '' ?>"
                                                            placeholder="0">
                                                 </div>
@@ -239,8 +190,7 @@ endif;
                                             <div class="col-md-6">
                                                 <div class="form-group">
                                                     <label for="deposit_amount">Tiền cọc</label>
-                                                    <input type="number" class="form-control" id="deposit_amount" name="deposit_amount" 
-                                                           min="0" step="1000"
+                                                    <input type="text" class="form-control" id="deposit_amount" name="deposit_amount"
                                                            value="<?= $data['deposit_amount'] ?? '0' ?>"
                                                            placeholder="0">
                                                 </div>
