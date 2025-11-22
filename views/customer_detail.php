@@ -294,6 +294,38 @@
                                                     <strong>Địa chỉ:</strong>
                                                     <?= !empty($customer['address']) ? htmlspecialchars($customer['address']) : '<span class="text-muted">Chưa cập nhật</span>' ?>
                                                 </li>
+                                                <li class="list-group-item">
+                                                    <strong>Giới tính:</strong>
+                                                    <?= !empty($customer['gender']) ? htmlspecialchars($customer['gender']) : '<span class="text-muted">Chưa cập nhật</span>' ?>
+                                                </li>
+                                                <li class="list-group-item">
+                                                    <strong>Năm sinh:</strong>
+                                                    <?= !empty($customer['year_of_birth']) ? htmlspecialchars($customer['year_of_birth']) : '<span class="text-muted">Chưa cập nhật</span>' ?>
+                                                </li>
+                                                <li class="list-group-item">
+                                                    <strong>Loại giấy tờ:</strong>
+                                                    <?= !empty($customer['id_type']) ? htmlspecialchars($customer['id_type']) : '<span class="text-muted">Chưa cập nhật</span>' ?>
+                                                </li>
+                                                <li class="list-group-item">
+                                                    <strong>Số giấy tờ tùy thân:</strong>
+                                                    <?= !empty($customer['id_number']) ? htmlspecialchars($customer['id_number']) : '<span class="text-muted">Chưa cập nhật</span>' ?>
+                                                </li>
+                                                <li class="list-group-item">
+                                                    <strong>Tình trạng thanh toán:</strong>
+                                                    <?= !empty($customer['payment_status']) ? htmlspecialchars($customer['payment_status']) : '<span class="text-muted">Chưa cập nhật</span>' ?>
+                                                </li>
+                                                <li class="list-group-item">
+                                                    <strong>Yêu cầu cá nhân:</strong>
+                                                    <?= !empty($customer['personal_requests']) ? nl2br(htmlspecialchars($customer['personal_requests'])) : '<span class="text-muted">Chưa cập nhật</span>' ?>
+                                                </li>
+                                                <li class="list-group-item">
+                                                    <strong>Trạng thái check-in:</strong>
+                                                    <?= !empty($customer['checkin_status']) ? htmlspecialchars($customer['checkin_status']) : '<span class="text-muted">Chưa cập nhật</span>' ?>
+                                                </li>
+                                                <li class="list-group-item">
+                                                    <strong>Phân bổ phòng:</strong>
+                                                    <?= !empty($customer['room_allocation']) ? htmlspecialchars($customer['room_allocation']) : '<span class="text-muted">Chưa cập nhật</span>' ?>
+                                                </li>
                                             </ul>
 
                                             <h5 class="text-primary mt-4 mb-3">Lịch sử Giao dịch & Ghi chú</h5>

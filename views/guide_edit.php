@@ -288,6 +288,114 @@ endif;
                                 </select>
                             </div>
 
+                            <!-- Personal Information Section -->
+                            <hr class="my-4">
+                            <h5 class="text-primary mb-3">Thông tin cá nhân</h5>
+
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label for="birth_date" class="form-label">Ngày sinh:</label>
+                                        <input type="date" class="form-control" id="birth_date" name="birth_date" value="<?= $guide['birth_date'] ?? '' ?>">
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label for="experience_years" class="form-label">Số năm kinh nghiệm:</label>
+                                        <input type="number" class="form-control" id="experience_years" name="experience_years" value="<?= $guide['experience_years'] ?? '' ?>" min="0" max="50">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="languages" class="form-label">Ngôn ngữ sử dụng:</label>
+                                <input type="text" class="form-control" id="languages" name="languages" value="<?= $guide['languages'] ?? '' ?>" placeholder="Ví dụ: Tiếng Việt, Tiếng Anh, Tiếng Trung">
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="certificates" class="form-label">Chứng chỉ chuyên môn:</label>
+                                <textarea class="form-control" id="certificates" name="certificates" rows="3" placeholder="Liệt kê các chứng chỉ, bằng cấp..."><?= $guide['certificates'] ?? '' ?></textarea>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label for="emergency_contact" class="form-label">Liên hệ khẩn cấp:</label>
+                                        <input type="text" class="form-control" id="emergency_contact" name="emergency_contact" value="<?= $guide['emergency_contact'] ?? '' ?>" placeholder="Tên và số điện thoại">
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label for="health_status" class="form-label">Tình trạng sức khỏe:</label>
+                                        <select class="form-control" id="health_status" name="health_status">
+                                            <option value="Excellent" <?= ($guide['health_status'] ?? 'Good') == 'Excellent' ? 'selected' : '' ?>>Xuất sắc</option>
+                                            <option value="Good" <?= ($guide['health_status'] ?? 'Good') == 'Good' ? 'selected' : '' ?>>Tốt</option>
+                                            <option value="Fair" <?= ($guide['health_status'] ?? '') == 'Fair' ? 'selected' : '' ?>>Khá</option>
+                                            <option value="Poor" <?= ($guide['health_status'] ?? '') == 'Poor' ? 'selected' : '' ?>>Kém</option>
+                                            <option value="Critical" <?= ($guide['health_status'] ?? '') == 'Critical' ? 'selected' : '' ?>>Nghiêm trọng</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="address" class="form-label">Địa chỉ:</label>
+                                <textarea class="form-control" id="address" name="address" rows="2" placeholder="Địa chỉ hiện tại"><?= $guide['address'] ?? '' ?></textarea>
+                            </div>
+
+                            <!-- Professional Information Section -->
+                            <hr class="my-4">
+                            <h5 class="text-primary mb-3">Thông tin chuyên môn</h5>
+
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label for="guide_type" class="form-label">Loại hướng dẫn viên:</label>
+                                        <select class="form-control" id="guide_type" name="guide_type">
+                                            <option value="Nội địa" <?= ($guide['guide_type'] ?? 'Nội địa') == 'Nội địa' ? 'selected' : '' ?>>Nội địa</option>
+                                            <option value="Quốc tế" <?= ($guide['guide_type'] ?? '') == 'Quốc tế' ? 'selected' : '' ?>>Quốc tế</option>
+                                            <option value="Cả hai" <?= ($guide['guide_type'] ?? '') == 'Cả hai' ? 'selected' : '' ?>>Cả hai</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label for="availability_status" class="form-label">Trạng thái sẵn sàng:</label>
+                                        <select class="form-control" id="availability_status" name="availability_status">
+                                            <option value="Available" <?= ($guide['availability_status'] ?? 'Available') == 'Available' ? 'selected' : '' ?>>Sẵn sàng</option>
+                                            <option value="Busy" <?= ($guide['availability_status'] ?? '') == 'Busy' ? 'selected' : '' ?>>Bận</option>
+                                            <option value="On Leave" <?= ($guide['availability_status'] ?? '') == 'On Leave' ? 'selected' : '' ?>>Đang nghỉ</option>
+                                            <option value="Unavailable" <?= ($guide['availability_status'] ?? '') == 'Unavailable' ? 'selected' : '' ?>>Không khả dụng</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="specialization" class="form-label">Chuyên môn/Chuyên tuyến:</label>
+                                <input type="text" class="form-control" id="specialization" name="specialization" value="<?= $guide['specialization'] ?? '' ?>" placeholder="Ví dụ: Du lịch mạo hiểm, Văn hóa Việt Nam, Biển đảo">
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label for="performance_rating" class="form-label">Đánh giá năng lực (1-5):</label>
+                                        <input type="number" class="form-control" id="performance_rating" name="performance_rating" value="<?= $guide['performance_rating'] ?? '' ?>" min="1" max="5" step="0.1">
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label for="join_date" class="form-label">Ngày gia nhập:</label>
+                                        <input type="date" class="form-control" id="join_date" name="join_date" value="<?= $guide['join_date'] ?? '' ?>">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="notes" class="form-label">Ghi chú:</label>
+                                <textarea class="form-control" id="notes" name="notes" rows="3" placeholder="Thông tin bổ sung, ghi chú đặc biệt..."><?= $guide['notes'] ?? '' ?></textarea>
+                            </div>
+
                             <div class="d-flex justify-content-end">
                                 <a href="?action=guides" class="btn btn-secondary me-2">Hủy bỏ</a>
                                 <button type="submit" class="btn btn-primary">Cập nhật hướng dẫn viên</button>

@@ -41,6 +41,9 @@ match ($action) {
     'addCustomer'       => $customerController->addCustomer(),
     'customer_delete'   => $customerController->customer_delete(),
     'customer_detail'   => $customerController->customer_detail(),
+    'updateCheckinStatus' => $customerController->updateCheckinStatus(),
+    'updateRoomAllocation' => $customerController->updateRoomAllocation(),
+    'printGroupList'    => $customerController->printGroupList(),
 
     // Guide routes
     'guides'         => $guideController->index(),
@@ -50,6 +53,15 @@ match ($action) {
     'addGuide'       => $guideController->addGuide(),
     'guide_delete'   => $guideController->guide_delete(),
     'guide_detail'   => $guideController->guide_detail(),
+    'guide_schedule' => $guideController->guide_schedule(),
+    'update_schedule' => $guideController->update_schedule(),
+    'update_availability' => $guideController->update_availability(),
+    'guide_performance' => $guideController->guide_performance(),
+    'update_health_status' => $guideController->update_health_status(),
+    'add_performance_log' => $guideController->add_performance_log(),
+    'guides_by_type' => $guideController->guides_by_type(),
+    'guides_by_specialization' => $guideController->guides_by_specialization(),
+    'guide_dashboard' => $guideController->guide_dashboard(),
 
 
     'booking_add_to_departure' => $bookingController->addBookingToDeparture(),

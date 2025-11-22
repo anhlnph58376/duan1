@@ -243,11 +243,13 @@
                                 <thead>
                                     <tr>
                                         <th>ID</th>
-                                        <th>Tên hướng dẫn viên</th>
-                                        <th>Số điện thoại</th>
-                                        <th>Email</th>
-                                        <th>Giấy phép</th>
-                                        <th>Trạng thái</th>
+                                        <th>Tên HDV</th>
+                                        <th>SĐT</th>
+                                        <th>Loại</th>
+                                        <th>Kinh nghiệm</th>
+                                        <th>Đánh giá</th>
+                                        <th>Sức khỏe</th>
+                                        <th>Sẵn sàng</th>
                                         <th>Thao tác</th>
                                     </tr>
                                 </thead>
@@ -255,25 +257,64 @@
                                     <?php foreach ($guides as $guide) { ?>
                                         <tr>
                                             <td><?= $guide['id'] ?></td>
-                                            <td><?= $guide['name'] ?></td>
-                                            <td><?= $guide['phone'] ?></td>
-                                            <td><?= $guide['email'] ?? 'N/A' ?></td>
-                                            <td><?= $guide['license_info'] ?? 'N/A' ?></td>
                                             <td>
-                                                <span class="badge badge-<?= $guide['status'] == 'Active' ? 'success' : ($guide['status'] == 'Inactive' ? 'secondary' : 'warning') ?>">
-                                                    <?= $guide['status'] ?>
+                                                <strong><?= $guide['name'] ?></strong><br>
+                                                <small class="text-muted"><?= $guide['email'] ?? 'N/A' ?></small>
+                                            </td>
+                                            <td><?= $guide['phone'] ?></td>
+                                            <td>
+                                                <span class="badge bg-primary">
+                                                    <?= $guide['guide_type'] ?? 'Nội địa' ?>
+                                                </span>
+                                            </td>
+                                            <td>
+                                                <?php if (!empty($guide['experience_years'])): ?>
+                                                    <?= $guide['experience_years'] ?> năm
+                                                <?php else: ?>
+                                                    <span class="text-muted">-</span>
+                                                <?php endif; ?>
+                                            </td>
+                                            <td>
+                                                <?php if (!empty($guide['performance_rating'])): ?>
+                                                    <span class="text-warning">
+                                                        <?php for ($i = 1; $i <= 5; $i++): ?>
+                                                            <i class="fas fa-star<?= $i <= $guide['performance_rating'] ? '' : '-half-alt' ?>"></i>
+                                                        <?php endfor; ?>
+                                                    </span>
+                                                    <br><small>(<?= number_format($guide['performance_rating'], 1) ?>)</small>
+                                                <?php else: ?>
+                                                    <span class="text-muted">-</span>
+                                                <?php endif; ?>
+                                            </td>
+                                            <td>
+                                                <span class="badge badge-<?= $guide['health_status'] == 'Excellent' ? 'success' : ($guide['health_status'] == 'Good' ? 'info' : 'warning') ?>">
+                                                    <?= $guide['health_status'] ?? 'Good' ?>
+                                                </span>
+                                            </td>
+                                            <td>
+                                                <span class="badge badge-<?= $guide['availability_status'] == 'Available' ? 'success' : ($guide['availability_status'] == 'Busy' ? 'warning' : 'danger') ?>">
+                                                    <?= $guide['availability_status'] ?? 'Available' ?>
                                                 </span>
                                             </td>
                                             <td class="align-middle">
-                                                <a href="?action=guide_edit&id=<?= $guide['id'] ?>" class="btn btn-primary btn-circle btn-sm">
-                                                    <i class="fas fa-edit"></i>
-                                                </a>
-                                                <a href="?action=guide_delete&id=<?= $guide['id'] ?>" class="btn btn-danger btn-circle btn-sm">
-                                                    <i class="fas fa-trash"></i>
-                                                </a>
-                                                <a href="?action=guide_detail&id=<?= $guide['id'] ?>" class="btn btn-info btn-circle btn-sm">
-                                                    <i class="fas fa-search"></i>
-                                                </a>
+                                                <div class="btn-group" role="group">
+                                                    <a href="?action=guide_detail&id=<?= $guide['id'] ?>" class="btn btn-info btn-circle btn-sm" title="Xem chi tiết">
+                                                        <i class="fas fa-search"></i>
+                                                    </a>
+                                                    <a href="?action=guide_edit&id=<?= $guide['id'] ?>" class="btn btn-primary btn-circle btn-sm" title="Chỉnh sửa">
+                                                        <i class="fas fa-edit"></i>
+                                                    </a>
+                                                    <a href="?action=guide_schedule&id=<?= $guide['id'] ?>" class="btn btn-warning btn-circle btn-sm" title="Lịch làm việc">
+                                                        <i class="fas fa-calendar"></i>
+                                                    </a>
+                                                    <a href="?action=guide_performance&id=<?= $guide['id'] ?>" class="btn btn-success btn-circle btn-sm" title="Hiệu suất">
+                                                        <i class="fas fa-chart-line"></i>
+                                                    </a>
+                                                    <a href="?action=guide_delete&id=<?= $guide['id'] ?>" class="btn btn-danger btn-circle btn-sm" title="Xóa"
+                                                       onclick="return confirm('Bạn có chắc muốn xóa hướng dẫn viên này?')">
+                                                        <i class="fas fa-trash"></i>
+                                                    </a>
+                                                </div>
                                             </td>
                                         </tr>
                                     <?php } ?>

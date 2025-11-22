@@ -234,7 +234,12 @@
                 <div class="card shadow mb-4">
                     <div class="card-header py-3 d-flex justify-content-between align-items-center">
                         <h6 class="m-0 font-weight-bold text-primary">Danh sách khách hàng</h6>
-                        <a href="?action=customer_add" class="btn btn-primary">Thêm khách hàng</a>
+                        <div>
+                            <a href="?action=printGroupList&preview=1" target="_blank" class="btn btn-success me-2">
+                                <i class="fas fa-print"></i> In danh sách đoàn
+                            </a>
+                            <a href="?action=customer_add" class="btn btn-primary">Thêm khách hàng</a>
+                        </div>
                     </div>
                     <div class="card-body">
                         <div class="table-responsive">
@@ -245,8 +250,12 @@
                                         <th>Tên khách hàng</th>
                                         <th>Số điện thoại</th>
                                         <th>Email</th>
-                                        <th>Địa chỉ</th>
-                                        <th>Ghi chú lịch sử</th>
+                                        <th>Giới tính</th>
+                                        <th>Năm sinh</th>
+                                        <th>Giấy tờ tùy thân</th>
+                                        <th>Tình trạng thanh toán</th>
+                                        <th>Check-in</th>
+                                        <th>Phòng</th>
                                         <th>Thao tác</th>
                                     </tr>
                                 </thead>
@@ -257,22 +266,52 @@
                                         <td><?= $customer['name'] ?></td>
                                         <td><?= $customer['phone'] ?></td>
                                         <td><?= $customer['email'] ?? 'N/A' ?></td>
-                                        <td><?= $customer['address'] ?? 'N/A' ?></td>
-                                        <td><?= substr($customer['history_notes'] ?? '', 0, 50) ?><?= strlen($customer['history_notes'] ?? '') > 50 ? '...' : '' ?>
+                                        <td><?= $customer['gender'] ?? 'N/A' ?></td>
+                                        <td><?= $customer['year_of_birth'] ?? 'N/A' ?></td>
+                                        <td>
+                                            <?php if (!empty($customer['id_type']) && !empty($customer['id_number'])): ?>
+                                                <?= htmlspecialchars($customer['id_type']) ?><br>
+                                                <small class="text-muted"><?= htmlspecialchars($customer['id_number']) ?></small>
+                                            <?php else: ?>
+                                                N/A
+                                            <?php endif; ?>
                                         </td>
+                                        <td>
+                                            <span class="badge bg-<?= $customer['payment_status'] == 'Đã thanh toán' ? 'success' : ($customer['payment_status'] == 'Thanh toán một phần' ? 'warning' : 'danger') ?>">
+                                                <?= $customer['payment_status'] ?? 'Chưa thanh toán' ?>
+                                            </span>
+                                        </td>
+                                        <td>
+                                            <span class="badge bg-<?= $customer['checkin_status'] == 'Đã đến' ? 'success' : ($customer['checkin_status'] == 'Vắng mặt' ? 'danger' : 'secondary') ?>">
+                                                <?= $customer['checkin_status'] ?? 'Chưa đến' ?>
+                                            </span>
+                                        </td>
+                                        <td><?= $customer['room_allocation'] ?? 'N/A' ?></td>
                                         <td class="align-middle">
-                                            <a href="?action=customer_edit&id=<?= $customer['id'] ?>"
-                                                class="btn btn-primary btn-circle btn-sm">
-                                                <i class="fas fa-edit"></i>
-                                            </a>
-                                            <a href="?action=customer_delete&id=<?= $customer['id'] ?>"
-                                                class="btn btn-danger btn-circle btn-sm">
-                                                <i class="fas fa-trash"></i>
-                                            </a>
-                                            <a href="?action=customer_detail&id=<?= $customer['id'] ?>"
-                                                class="btn btn-info btn-circle btn-sm">
-                                                <i class="fas fa-search"></i>
-                                            </a>
+                                            <div class="btn-group" role="group">
+                                                <a href="?action=customer_edit&id=<?= $customer['id'] ?>"
+                                                    class="btn btn-primary btn-sm">
+                                                    <i class="fas fa-edit"></i>
+                                                </a>
+                                                <a href="?action=customer_delete&id=<?= $customer['id'] ?>"
+                                                    class="btn btn-danger btn-sm">
+                                                    <i class="fas fa-trash"></i>
+                                                </a>
+                                                <a href="?action=customer_detail&id=<?= $customer['id'] ?>"
+                                                    class="btn btn-info btn-sm">
+                                                    <i class="fas fa-search"></i>
+                                                </a>
+                                            </div>
+                                            <div class="mt-1">
+                                                <form method="POST" action="?action=updateCheckinStatus" class="d-inline">
+                                                    <input type="hidden" name="customer_id" value="<?= $customer['id'] ?>">
+                                                    <select name="checkin_status" class="form-select form-select-sm d-inline w-auto" onchange="this.form.submit()">
+                                                        <option value="Chưa đến" <?= ($customer['checkin_status'] ?? '') == 'Chưa đến' ? 'selected' : '' ?>>Chưa đến</option>
+                                                        <option value="Đã đến" <?= ($customer['checkin_status'] ?? '') == 'Đã đến' ? 'selected' : '' ?>>Đã đến</option>
+                                                        <option value="Vắng mặt" <?= ($customer['checkin_status'] ?? '') == 'Vắng mặt' ? 'selected' : '' ?>>Vắng mặt</option>
+                                                    </select>
+                                                </form>
+                                            </div>
                                         </td>
                                     </tr>
                                     <?php } ?>

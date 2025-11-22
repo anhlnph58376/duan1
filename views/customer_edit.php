@@ -269,6 +269,68 @@ endif;
                             </div>
 
                             <div class="mb-3">
+                                <label for="gender" class="form-label">Giới tính:</label>
+                                <select class="form-control" id="gender" name="gender">
+                                    <option value="">Chọn giới tính</option>
+                                    <option value="Nam" <?= ($customer['gender'] ?? '') == 'Nam' ? 'selected' : '' ?>>Nam</option>
+                                    <option value="Nữ" <?= ($customer['gender'] ?? '') == 'Nữ' ? 'selected' : '' ?>>Nữ</option>
+                                    <option value="Khác" <?= ($customer['gender'] ?? '') == 'Khác' ? 'selected' : '' ?>>Khác</option>
+                                </select>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="year_of_birth" class="form-label">Năm sinh:</label>
+                                <input type="number" class="form-control" id="year_of_birth" name="year_of_birth" value="<?= $customer['year_of_birth'] ?? '' ?>" min="1900" max="<?= date('Y') ?>">
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="id_type" class="form-label">Loại giấy tờ:</label>
+                                <select class="form-control" id="id_type" name="id_type">
+                                    <option value="">Chọn loại giấy tờ</option>
+                                    <option value="Căn cước công dân" <?= ($customer['id_type'] ?? '') == 'Căn cước công dân' ? 'selected' : '' ?>>Căn cước công dân</option>
+                                    <option value="Chứng minh nhân dân" <?= ($customer['id_type'] ?? '') == 'Chứng minh nhân dân' ? 'selected' : '' ?>>Chứng minh nhân dân</option>
+                                    <option value="Hộ chiếu" <?= ($customer['id_type'] ?? '') == 'Hộ chiếu' ? 'selected' : '' ?>>Hộ chiếu</option>
+                                    <option value="Giấy phép lái xe" <?= ($customer['id_type'] ?? '') == 'Giấy phép lái xe' ? 'selected' : '' ?>>Giấy phép lái xe</option>
+                                    <option value="Khác" <?= ($customer['id_type'] ?? '') == 'Khác' ? 'selected' : '' ?>>Khác</option>
+                                </select>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="id_number" class="form-label">Số giấy tờ tùy thân:</label>
+                                <input type="text" class="form-control" id="id_number" name="id_number" value="<?= $customer['id_number'] ?? '' ?>" placeholder="Nhập số giấy tờ">
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="payment_status" class="form-label">Tình trạng thanh toán:</label>
+                                <select class="form-control" id="payment_status" name="payment_status">
+                                    <option value="">Chọn tình trạng</option>
+                                    <option value="Chưa thanh toán" <?= ($customer['payment_status'] ?? '') == 'Chưa thanh toán' ? 'selected' : '' ?>>Chưa thanh toán</option>
+                                    <option value="Đã thanh toán" <?= ($customer['payment_status'] ?? '') == 'Đã thanh toán' ? 'selected' : '' ?>>Đã thanh toán</option>
+                                    <option value="Thanh toán một phần" <?= ($customer['payment_status'] ?? '') == 'Thanh toán một phần' ? 'selected' : '' ?>>Thanh toán một phần</option>
+                                </select>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="personal_requests" class="form-label">Yêu cầu cá nhân:</label>
+                                <textarea class="form-control" id="personal_requests" name="personal_requests" rows="3"><?= $customer['personal_requests'] ?? '' ?></textarea>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="checkin_status" class="form-label">Trạng thái check-in:</label>
+                                <select class="form-control" id="checkin_status" name="checkin_status">
+                                    <option value="">Chọn trạng thái</option>
+                                    <option value="Chưa đến" <?= ($customer['checkin_status'] ?? '') == 'Chưa đến' ? 'selected' : '' ?>>Chưa đến</option>
+                                    <option value="Đã đến" <?= ($customer['checkin_status'] ?? '') == 'Đã đến' ? 'selected' : '' ?>>Đã đến</option>
+                                    <option value="Vắng mặt" <?= ($customer['checkin_status'] ?? '') == 'Vắng mặt' ? 'selected' : '' ?>>Vắng mặt</option>
+                                </select>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="room_allocation" class="form-label">Phân bổ phòng:</label>
+                                <input type="text" class="form-control" id="room_allocation" name="room_allocation" value="<?= $customer['room_allocation'] ?? '' ?>" placeholder="Ví dụ: Phòng 101 - giường đơn">
+                            </div>
+
+                            <div class="mb-3">
                                 <label for="history_notes" class="form-label">Ghi chú lịch sử:</label>
                                 <textarea class="form-control" id="history_notes" name="history_notes" rows="4"><?= $customer['history_notes'] ?? '' ?></textarea>
                             </div>

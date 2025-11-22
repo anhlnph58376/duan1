@@ -280,42 +280,128 @@
 
                                         <div class="col-lg-8">
                                             <h5 class="text-primary mb-3">Thông tin Cá nhân</h5>
-                                            <ul class="list-group list-group-flush mb-4">
-                                                <li class="list-group-item">
-                                                    <strong>ID:</strong>
-                                                    <span class="badge bg-info text-dark">#<?= htmlspecialchars($guide['id']) ?></span>
-                                                </li>
-                                                <?php if (!empty($guide['user_id'])): ?>
-                                                <li class="list-group-item">
-                                                    <strong>ID Người dùng:</strong>
-                                                    <span class="badge bg-secondary text-white">#<?= htmlspecialchars($guide['user_id']) ?></span>
-                                                </li>
-                                                <?php endif; ?>
-                                                <li class="list-group-item">
-                                                    <strong>Tên hướng dẫn viên:</strong>
-                                                    <?= htmlspecialchars($guide['name']) ?>
-                                                </li>
-                                                <li class="list-group-item">
-                                                    <strong>Số điện thoại:</strong>
-                                                    <span class="text-primary fw-bold"><?= htmlspecialchars($guide['phone']) ?></span>
-                                                </li>
-                                                <li class="list-group-item">
-                                                    <strong>Email:</strong>
-                                                    <?= !empty($guide['email']) ? '<a href="mailto:' . htmlspecialchars($guide['email']) . '">' . htmlspecialchars($guide['email']) . '</a>' : '<span class="text-muted">Chưa cập nhật</span>' ?>
-                                                </li>
-                                                <li class="list-group-item">
-                                                    <strong>Trạng thái:</strong>
-                                                    <span class="badge badge-<?= $guide['status'] == 'Active' ? 'success' : ($guide['status'] == 'Inactive' ? 'secondary' : 'warning') ?>">
-                                                        <?= htmlspecialchars($guide['status']) ?>
-                                                    </span>
-                                                </li>
-                                            </ul>
+                                            <div class="row">
+                                                <div class="col-md-6">
+                                                    <ul class="list-group list-group-flush mb-4">
+                                                        <li class="list-group-item">
+                                                            <strong>ID:</strong>
+                                                            <span class="badge bg-info text-dark">#<?= htmlspecialchars($guide['id']) ?></span>
+                                                        </li>
+                                                        <?php if (!empty($guide['user_id'])): ?>
+                                                        <li class="list-group-item">
+                                                            <strong>ID Người dùng:</strong>
+                                                            <span class="badge bg-secondary text-white">#<?= htmlspecialchars($guide['user_id']) ?></span>
+                                                        </li>
+                                                        <?php endif; ?>
+                                                        <li class="list-group-item">
+                                                            <strong>Tên hướng dẫn viên:</strong>
+                                                            <?= htmlspecialchars($guide['name']) ?>
+                                                        </li>
+                                                        <li class="list-group-item">
+                                                            <strong>Số điện thoại:</strong>
+                                                            <span class="text-primary fw-bold"><?= htmlspecialchars($guide['phone']) ?></span>
+                                                        </li>
+                                                        <li class="list-group-item">
+                                                            <strong>Email:</strong>
+                                                            <?= !empty($guide['email']) ? '<a href="mailto:' . htmlspecialchars($guide['email']) . '">' . htmlspecialchars($guide['email']) . '</a>' : '<span class="text-muted">Chưa cập nhật</span>' ?>
+                                                        </li>
+                                                        <li class="list-group-item">
+                                                            <strong>Ngày sinh:</strong>
+                                                            <?= !empty($guide['birth_date']) ? date('d/m/Y', strtotime($guide['birth_date'])) : '<span class="text-muted">Chưa cập nhật</span>' ?>
+                                                        </li>
+                                                        <li class="list-group-item">
+                                                            <strong>Địa chỉ:</strong>
+                                                            <?= !empty($guide['address']) ? htmlspecialchars($guide['address']) : '<span class="text-muted">Chưa cập nhật</span>' ?>
+                                                        </li>
+                                                        <li class="list-group-item">
+                                                            <strong>Liên hệ khẩn cấp:</strong>
+                                                            <?= !empty($guide['emergency_contact']) ? htmlspecialchars($guide['emergency_contact']) : '<span class="text-muted">Chưa cập nhật</span>' ?>
+                                                        </li>
+                                                    </ul>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <ul class="list-group list-group-flush mb-4">
+                                                        <li class="list-group-item">
+                                                            <strong>Trạng thái:</strong>
+                                                            <span class="badge badge-<?= $guide['status'] == 'Active' ? 'success' : ($guide['status'] == 'Inactive' ? 'secondary' : 'warning') ?>">
+                                                                <?= htmlspecialchars($guide['status']) ?>
+                                                            </span>
+                                                        </li>
+                                                        <li class="list-group-item">
+                                                            <strong>Sẵn sàng:</strong>
+                                                            <span class="badge badge-<?= $guide['availability_status'] == 'Available' ? 'success' : ($guide['availability_status'] == 'Busy' ? 'warning' : 'danger') ?>">
+                                                                <?= htmlspecialchars($guide['availability_status'] ?? 'Available') ?>
+                                                            </span>
+                                                        </li>
+                                                        <li class="list-group-item">
+                                                            <strong>Loại HDV:</strong>
+                                                            <span class="badge bg-primary">
+                                                                <?= htmlspecialchars($guide['guide_type'] ?? 'Nội địa') ?>
+                                                            </span>
+                                                        </li>
+                                                        <li class="list-group-item">
+                                                            <strong>Kinh nghiệm:</strong>
+                                                            <?= !empty($guide['experience_years']) ? htmlspecialchars($guide['experience_years']) . ' năm' : '<span class="text-muted">Chưa cập nhật</span>' ?>
+                                                        </li>
+                                                        <li class="list-group-item">
+                                                            <strong>Đánh giá:</strong>
+                                                            <?php if (!empty($guide['performance_rating'])): ?>
+                                                                <span class="text-warning">
+                                                                    <?php for ($i = 1; $i <= 5; $i++): ?>
+                                                                        <i class="fas fa-star<?= $i <= $guide['performance_rating'] ? '' : '-half-alt' ?>"></i>
+                                                                    <?php endfor; ?>
+                                                                    (<?= number_format($guide['performance_rating'], 1) ?>/5)
+                                                                </span>
+                                                            <?php else: ?>
+                                                                <span class="text-muted">Chưa đánh giá</span>
+                                                            <?php endif; ?>
+                                                        </li>
+                                                        <li class="list-group-item">
+                                                            <strong>Sức khỏe:</strong>
+                                                            <span class="badge badge-<?= $guide['health_status'] == 'Excellent' ? 'success' : ($guide['health_status'] == 'Good' ? 'info' : 'warning') ?>">
+                                                                <?= htmlspecialchars($guide['health_status'] ?? 'Good') ?>
+                                                            </span>
+                                                        </li>
+                                                        <li class="list-group-item">
+                                                            <strong>Ngày gia nhập:</strong>
+                                                            <?= !empty($guide['join_date']) ? date('d/m/Y', strtotime($guide['join_date'])) : '<span class="text-muted">Chưa cập nhật</span>' ?>
+                                                        </li>
+                                                    </ul>
+                                                </div>
+                                            </div>
 
                                             <h5 class="text-primary mt-4 mb-3">Thông tin Chuyên môn</h5>
-                                            <div class="p-3 bg-light rounded border">
-                                                <strong>Giấy phép:</strong><br>
-                                                <?= !empty($guide['license_info']) ? nl2br(htmlspecialchars($guide['license_info'])) : '<span class="text-muted">Chưa có thông tin giấy phép</span>' ?>
+                                            <div class="row">
+                                                <div class="col-md-6">
+                                                    <div class="p-3 bg-light rounded border mb-3">
+                                                        <strong>Giấy phép:</strong><br>
+                                                        <?= !empty($guide['license_info']) ? nl2br(htmlspecialchars($guide['license_info'])) : '<span class="text-muted">Chưa có thông tin giấy phép</span>' ?>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <div class="p-3 bg-light rounded border mb-3">
+                                                        <strong>Ngôn ngữ:</strong><br>
+                                                        <?= !empty($guide['languages']) ? htmlspecialchars($guide['languages']) : '<span class="text-muted">Chưa cập nhật</span>' ?>
+                                                    </div>
+                                                </div>
                                             </div>
+
+                                            <div class="p-3 bg-light rounded border mb-3">
+                                                <strong>Chứng chỉ chuyên môn:</strong><br>
+                                                <?= !empty($guide['certificates']) ? nl2br(htmlspecialchars($guide['certificates'])) : '<span class="text-muted">Chưa có chứng chỉ nào</span>' ?>
+                                            </div>
+
+                                            <div class="p-3 bg-light rounded border mb-3">
+                                                <strong>Chuyên môn/Chuyên tuyến:</strong><br>
+                                                <?= !empty($guide['specialization']) ? htmlspecialchars($guide['specialization']) : '<span class="text-muted">Chưa cập nhật</span>' ?>
+                                            </div>
+
+                                            <?php if (!empty($guide['notes'])): ?>
+                                            <div class="p-3 bg-light rounded border">
+                                                <strong>Ghi chú:</strong><br>
+                                                <?= nl2br(htmlspecialchars($guide['notes'])) ?>
+                                            </div>
+                                            <?php endif; ?>
                                         </div>
                                     </div>
 

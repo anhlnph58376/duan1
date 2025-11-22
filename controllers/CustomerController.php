@@ -33,6 +33,14 @@ class CustomerController
             $email = $_POST['email'] ?? null;
             $address = $_POST['address'] ?? null;
             $history_notes = $_POST['history_notes'] ?? null;
+            $gender = $_POST['gender'] ?? null;
+            $year_of_birth = $_POST['year_of_birth'] ?? null;
+            $id_type = $_POST['id_type'] ?? null;
+            $id_number = $_POST['id_number'] ?? null;
+            $payment_status = $_POST['payment_status'] ?? null;
+            $personal_requests = $_POST['personal_requests'] ?? null;
+            $checkin_status = $_POST['checkin_status'] ?? null;
+            $room_allocation = $_POST['room_allocation'] ?? null;
 
             if ($this->customers->checkPhoneExistsForUpdate($phone, $id)) {
                 $_SESSION['error_phone'] = "Số điện thoại (" . $phone . ") đã tồn tại ở khách hàng khác! Vui lòng chọn số khác!";
@@ -46,7 +54,15 @@ class CustomerController
                 $phone,
                 $email,
                 $address,
-                $history_notes
+                $history_notes,
+                $gender,
+                $year_of_birth,
+                $id_type,
+                $id_number,
+                $payment_status,
+                $personal_requests,
+                $checkin_status,
+                $room_allocation
             );
             $_SESSION['success_message'] = "Cập nhật khách hàng thành công!";
             header('Location: ?action=customers');
@@ -67,6 +83,14 @@ class CustomerController
             $email = $_POST['email'] ?? null;
             $address = $_POST['address'] ?? null;
             $history_notes = $_POST['history_notes'] ?? null;
+            $gender = $_POST['gender'] ?? null;
+            $year_of_birth = $_POST['year_of_birth'] ?? null;
+            $id_type = $_POST['id_type'] ?? null;
+            $id_number = $_POST['id_number'] ?? null;
+            $payment_status = $_POST['payment_status'] ?? null;
+            $personal_requests = $_POST['personal_requests'] ?? null;
+            $checkin_status = $_POST['checkin_status'] ?? null;
+            $room_allocation = $_POST['room_allocation'] ?? null;
 
             if ($this->customers->checkPhoneExists($phone)) {
                 $_SESSION['error_phone'] = "Số điện thoại (" . $phone . ") đã tồn tại. Vui lòng chọn số khác!";
@@ -75,10 +99,44 @@ class CustomerController
                 exit();
             }
 
-            $this->customers->addCustomer($name, $phone, $email, $address, $history_notes);
+            $this->customers->addCustomer($name, $phone, $email, $address, $history_notes, $gender, $year_of_birth, $id_type, $id_number, $payment_status, $personal_requests, $checkin_status, $room_allocation);
             header('Location: ?action=customers');
             exit();
         }
+    }
+
+    public function updateCheckinStatus()
+    {
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $id = $_POST['customer_id'];
+            $checkin_status = $_POST['checkin_status'];
+            $this->customers->updateCheckinStatus($id, $checkin_status);
+            header('Location: ' . $_SERVER['HTTP_REFERER']);
+            exit();
+        }
+    }
+
+    public function updateRoomAllocation()
+    {
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $id = $_POST['customer_id'];
+            $room_allocation = $_POST['room_allocation'];
+            $this->customers->updateRoomAllocation($id, $room_allocation);
+            header('Location: ' . $_SERVER['HTTP_REFERER']);
+            exit();
+        }
+    }
+
+    public function printGroupList()
+    {
+        if (isset($_GET['departure_id'])) {
+            $departure_id = $_GET['departure_id'];
+            $customers = $this->customers->getCustomersByDeparture($departure_id);
+        } else {
+            $customers = $this->customers->getAllCustomers();
+        }
+
+        require_once PATH_VIEW . 'group_list_print.php';
     }
 
     public function customer_detail()
