@@ -1,5 +1,4 @@
 <?php
-
 class HomeController
 {
     public $tours;
