@@ -11,6 +11,125 @@ class HomeController
 
     public function index()
     {
+        // Khởi tạo các models cần thiết
+        $bookingModel = new Booking();
+        $customerModel = new Customer();
+        $departureModel = new Departure();
+        
+        // Lấy tổng doanh thu từ bookings
+        $totalRevenue = 0;
+        $allBookings = $bookingModel->getAllBookingsWithDepartures();
+        foreach ($allBookings as $booking) {
+            if (isset($booking['total_amount']) && is_numeric($booking['total_amount'])) {
+                $totalRevenue += $booking['total_amount'];
+            }
+        }
+        
+        // Tổng số booking
+        $totalBookings = count($allBookings);
+        
+        // Tổng số khách hàng
+        $allCustomers = $customerModel->getAllCustomers();
+        $totalCustomers = count($allCustomers);
+        
+        // Lấy top 5 bookings mới nhất
+        $topBookings = array_slice($allBookings, 0, 5);
+        
+        // Lấy top 5 khách hàng có nhiều booking nhất
+        $topCustomers = [];
+        $customerBookingCount = [];
+        foreach ($allBookings as $booking) {
+            $customerId = $booking['customer_id'] ?? 0;
+            if ($customerId > 0) {
+                if (!isset($customerBookingCount[$customerId])) {
+                    $customerBookingCount[$customerId] = 0;
+                }
+                $customerBookingCount[$customerId]++;
+            }
+        }
+        arsort($customerBookingCount);
+        $topCustomerIds = array_slice(array_keys($customerBookingCount), 0, 5, true);
+        foreach ($topCustomerIds as $customerId) {
+            foreach ($allCustomers as $customer) {
+                if ($customer['id'] == $customerId) {
+                    $customer['booking_count'] = $customerBookingCount[$customerId];
+                    $topCustomers[] = $customer;
+                    break;
+                }
+            }
+        }
+        
+        // Doanh thu theo tháng (2025)
+        $monthlyRevenue = array_fill(0, 12, 0);
+        foreach ($allBookings as $booking) {
+            if (!empty($booking['booking_date']) && isset($booking['total_amount'])) {
+                $bookingYear = date('Y', strtotime($booking['booking_date']));
+                $bookingMonth = (int)date('m', strtotime($booking['booking_date']));
+                if ($bookingYear == '2025' && $bookingMonth >= 1 && $bookingMonth <= 12) {
+                    $monthlyRevenue[$bookingMonth - 1] += (float)$booking['total_amount'];
+                }
+            }
+        }
+        
+        // Thống kê trạng thái booking
+        $pieStats = [
+            'Pending' => 0,
+            'Confirmed' => 0,
+            'Completed' => 0,
+            'Cancelled' => 0
+        ];
+        foreach ($allBookings as $booking) {
+            $status = $booking['status'] ?? 'Pending';
+            if (isset($pieStats[$status])) {
+                $pieStats[$status]++;
+            }
+        }
+        // Loại bỏ các trạng thái có giá trị 0
+        $pieStats = array_filter($pieStats, function($value) { return $value > 0; });
+        if (empty($pieStats)) {
+            $pieStats = ['No data' => 1];
+        }
+        
+        // Thống kê bookings
+        $bookingStats = [
+            'total' => $totalBookings,
+            'pending' => 0,
+            'confirmed' => 0,
+            'completed' => 0,
+            'cancelled' => 0
+        ];
+        foreach ($allBookings as $booking) {
+            $status = strtolower($booking['status'] ?? 'pending');
+            if (isset($bookingStats[$status])) {
+                $bookingStats[$status]++;
+            }
+        }
+        
+        // Thống kê departures
+        $allDepartures = $departureModel->getAllDepartures();
+        $departureStats = [
+            'total_departures' => count($allDepartures),
+            'total_bookings' => 0,
+            'total_guests' => 0,
+            'scheduled' => 0,
+            'in_progress' => 0,
+            'completed' => 0,
+            'canceled' => 0
+        ];
+        
+        foreach ($allDepartures as $departure) {
+            // Đếm booking theo departure
+            $departureStats['total_bookings'] += (int)($departure['booking_count'] ?? 0);
+            $departureStats['total_guests'] += (int)($departure['total_guests'] ?? 0);
+            
+            // Đếm theo trạng thái
+            $status = strtolower($departure['status'] ?? 'scheduled');
+            if ($status == 'scheduled') $departureStats['scheduled']++;
+            elseif ($status == 'in progress' || $status == 'in_progress') $departureStats['in_progress']++;
+            elseif ($status == 'completed') $departureStats['completed']++;
+            elseif ($status == 'canceled' || $status == 'cancelled') $departureStats['canceled']++;
+        }
+        
         require_once PATH_VIEW . 'main.php';
     }
 

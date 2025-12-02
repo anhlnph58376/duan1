@@ -7,6 +7,7 @@ uploads/tours/*.png
 uploads/tours/*.gif
 uploads/tours/gallery/*.jpg
 uploads/tours/gallery/*.png
+uploads/tours/gallery/*.gif
 
 # Keep directory structure
 !uploads/avatars/.gitkeep
@@ -24,26 +25,3 @@ storage/cache/*
 *.tmp
 *.temp
 *.bak
-*.swp
-*.swo
-*~
-
-# Ignore OS files
-.DS_Store
-Thumbs.db
-desktop.ini
-
-# Ignore IDE files
-.vscode/
-.idea/
-*.sublime-project
-*.sublime-workspace
-
-# Ignore composer vendor
-vendor/
-
-# Ignore node modules
-node_modules/
-
-# Keep important config (but ignore sensitive data if needed)
-# configs/env.php

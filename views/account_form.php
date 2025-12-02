@@ -12,30 +12,7 @@
     <?php include 'views/includes/sidebar.php'; ?>
     <div id="content-wrapper" class="d-flex flex-column">
         <div id="content">
-            <nav class="navbar navbar-expand navbar-light bg-white topbar mb-4 static-top shadow">
-                <a href="index.php?action=account_management" class="btn btn-link"><i class="fas fa-arrow-left"></i> Quay lại</a>
-                <ul class="navbar-nav ml-auto">
-                    <li class="nav-item dropdown no-arrow">
-                        <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button"
-                           data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            <span class="mr-2 d-none d-lg-inline text-gray-600 small">User</span>
-                            <img class="img-profile rounded-circle" src="assets/img/undraw_profile.svg">
-                        </a>
-                        <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in"
-                             aria-labelledby="userDropdown">
-                            <a class="dropdown-item" href="index.php?action=account_management">
-                                <i class="fas fa-user-cog fa-sm fa-fw mr-2 text-gray-400"></i>
-                                Quản lý tài khoản
-                            </a>
-                            <div class="dropdown-divider"></div>
-                            <a class="dropdown-item" href="index.php?action=logout">
-                                <i class="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i>
-                                Đăng xuất
-                            </a>
-                        </div>
-                    </li>
-                </ul>
-            </nav>
+            <?php require_once 'views/includes/topbar.php'; ?>
             <div class="container-fluid">
                 <div class="card shadow mb-4">
                     <div class="card-header py-3">

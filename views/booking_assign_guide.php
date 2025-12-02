@@ -84,10 +84,8 @@
             <div id="content">
 
                 <!-- Topbar -->
-                <nav class="navbar navbar-expand navbar-light bg-white topbar mb-4 static-top shadow">
-
-                    <!-- Sidebar Toggle (Topbar) -->
-                    <button id="sidebarToggleTop" class="btn btn-link d-md-none rounded-circle mr-3">
+                <?php require_once 'views/includes/topbar.php'; ?>
+                <!-- End of Topbar -->
                         <i class="fa fa-bars"></i>
                     </button>
 

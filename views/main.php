@@ -37,61 +37,7 @@
             <div id="content">
 
                 <!-- Topbar -->
-                <nav class="navbar navbar-expand navbar-light bg-white topbar mb-4 static-top shadow">
-
-                    <!-- Sidebar Toggle (Topbar) -->
-                    <button id="sidebarToggleTop" class="btn btn-link d-md-none rounded-circle mr-3" onclick="document.querySelector('.sticky-sidebar').classList.toggle('show');">
-                        <i class="fa fa-bars"></i>
-                    </button>
-
-                    <!-- Topbar Navbar -->
-                    <ul class="navbar-nav ml-auto">
-
-                        <div class="topbar-divider d-none d-sm-block"></div>
-
-                        <!-- Nav Item - User Information -->
-                        <li class="nav-item dropdown no-arrow">
-                            <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button"
-                                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                <span class="mr-2 d-none d-lg-inline text-gray-600 small">
-                                    <?= htmlspecialchars($_SESSION['user_name'] ?? 'Guest', ENT_QUOTES, 'UTF-8') ?>
-                                </span>
-                                <?php
-                                // Get current user avatar
-                                $currentUserAvatar = null;
-                                if (isset($_SESSION['user_id'])) {
-                                    $userModel = new User();
-                                    $currentUserData = $userModel->find($_SESSION['user_id']);
-                                    if ($currentUserData && !empty($currentUserData['image']) && file_exists($currentUserData['image'])) {
-                                        $currentUserAvatar = $currentUserData['image'];
-                                    }
-                                }
-                                ?>
-                                <?php if ($currentUserAvatar): ?>
-                                    <img class="img-profile rounded-circle" src="<?= htmlspecialchars($currentUserAvatar) ?>" 
-                                         style="width: 40px; height: 40px; object-fit: cover;">
-                                <?php else: ?>
-                                    <img class="img-profile rounded-circle" src="assets/img/undraw_profile.svg">
-                                <?php endif; ?>
-                            </a>
-                            <!-- Dropdown - User Information -->
-                            <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in"
-                                aria-labelledby="userDropdown">
-                                <a class="dropdown-item" href="?action=profile">
-                                    <i class="fas fa-user fa-sm fa-fw mr-2 text-gray-400"></i>
-                                    Thông tin cá nhân
-                                </a>
-                                <div class="dropdown-divider"></div>
-                                <a class="dropdown-item" href="index.php?action=logout">
-                                    <i class="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i>
-                                    Đăng xuất
-                                </a>
-                            </div>
-                        </li>
-
-                    </ul>
-
-                </nav>
+                <?php require_once 'views/includes/topbar.php'; ?>
                 <!-- End of Topbar -->
 
                 <!-- Begin Page Content -->
@@ -257,17 +203,6 @@
                                 </div>
                             </div>
                         </div>
-                        <!-- Booking status pie -->
-                        <div class="col-xl-4 col-lg-5 mb-4">
-                            <div class="card shadow mb-4">
-                                <div class="card-header py-3">
-                                    <h6 class="m-0 font-weight-bold text-primary">Tỷ lệ trạng thái booking</h6>
-                                </div>
-                                <div class="card-body">
-                                    <canvas id="bookingPieChart"></canvas>
-                                </div>
-                            </div>
-                        </div>
                     </div>
 
                     <script src="assets/vendor/chart.js/Chart.min.js"></script>
@@ -289,74 +224,7 @@
                                 options: { responsive: true, scales: { y: { beginAtZero: true } } }
                             });
                         }
-
-                        // Booking pie chart
-                        var ctxPie = document.getElementById('bookingPieChart')?.getContext('2d');
-                        if (ctxPie) {
-                            new Chart(ctxPie, {
-                                type: 'pie',
-                                data: {
-                                    labels: <?= json_encode(array_keys($pieStats)); ?>,
-                                    datasets: [{ data: <?= json_encode(array_values($pieStats)); ?>, backgroundColor: ['#4e73df','#1cc88a','#36b9cc','#f6c23e'] }]
-                                }
-                            });
-                        }
                     </script>
-
-                        // Biểu đồ tròn trạng thái booking
-                        var ctxPie = document.getElementById('bookingPieChart').getContext('2d');
-                        var bookingPieChart = new Chart(ctxPie, {
-                            type: 'pie',
-                            data: {
-                                labels: <?php echo json_encode(array_keys($pieStats)); ?>,
-                                datasets: [{
-                                    data: <?php echo json_encode(array_values($pieStats)); ?>,
-                                    backgroundColor: ['#4e73df', '#1cc88a', '#36b9cc', '#f6c23e', '#e74a3b', '#858796'],
-                                }],
-                            },
-                            options: {
-                                responsive: true
-                            }
-                        });
-                    </script>
-                    </div>
-
-                    <!-- Content Row -->
-                    <div class="row justify-content-center">
-                        <div class="col-lg-8 mb-4">
-                            <div class="card shadow mb-4">
-                                <div class="card-header py-3 text-center">
-                                    <h6 class="m-0 font-weight-bold text-primary">Thống kê trạng thái booking</h6>
-                                </div>
-                                <div class="card-body">
-                                    <div class="table-responsive">
-                                        <table class="table table-bordered text-center">
-                                            <thead class="thead-light">
-                                                <tr>
-                                                    <th class="text-center">Trạng thái</th>
-                                                    <th class="text-center">Số booking</th>
-                                                    <th class="text-center">Tổng doanh thu</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                <?php if (!empty($bookingStats)) : ?>
-                                                    <?php foreach ($bookingStats as $stat) : ?>
-                                                        <tr>
-                                                            <td><?php echo htmlspecialchars($stat['status']); ?></td>
-                                                            <td><span class="badge badge-primary"><?php echo $stat['count']; ?></span></td>
-                                                            <td><span class="font-weight-bold text-success"><?php echo number_format($stat['total_amount'], 0, ',', '.'); ?> VNĐ</span></td>
-                                                        </tr>
-                                                    <?php endforeach; ?>
-                                                <?php else : ?>
-                                                    <tr><td colspan="3">Không có dữ liệu thống kê trạng thái booking.</td></tr>
-                                                <?php endif; ?>
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                </div>
-                            </div>
->>>>>>> 86fafd4 (Commit all changes before pulling)
-                        </div>
                     </div>
 
                 </div>
@@ -383,33 +251,6 @@
     <a class="scroll-to-top rounded" href="#page-top">
         <i class="fas fa-angle-up"></i>
     </a>
-
-<<<<<<< HEAD
-=======
-</body>
-
-</html>
-
-    <!-- Logout Modal-->
-    <div class="modal fade" id="logoutModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
-        aria-hidden="true">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">Ready to Leave?</h5>
-                    <button class="close" type="button" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">×</span>
-                    </button>
-                </div>
-                <div class="modal-body">Select "Logout" below if you are ready to end your current session.</div>
-                <div class="modal-footer">
-                    <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
-                    <a class="btn btn-primary" href="login.html">Logout</a>
-                </div>
-            </div>
-        </div>
-    </div>
->>>>>>> 86fafd4 (Commit all changes before pulling)
 
     <!-- Bootstrap core JavaScript-->
     <script src="assets/vendor/jquery/jquery.min.js"></script>
