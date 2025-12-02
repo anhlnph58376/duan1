@@ -3,10 +3,10 @@
 
     <!-- Sidebar - Brand -->
     <a class="sidebar-brand d-flex align-items-center justify-content-center" href="<?= BASE_URL ?>">
-        <div class="sidebar-brand-icon rotate-n-15">
-            <i class="fas fa-route"></i>
+        <div class="sidebar-brand-icon">
+            <i class="fas fa-globe-asia"></i>
         </div>
-        <div class="sidebar-brand-text mx-3">Tour Manager</div>
+        <div class="sidebar-brand-text mx-3">H2A</div>
     </a>
 
     <!-- Divider -->
@@ -73,6 +73,13 @@
         </a>
     </li>
 
+    <!-- Nav Item - Account Management -->
+    <li class="nav-item <?= (isset($_GET['action']) && $_GET['action'] === 'account_management') ? 'active' : '' ?>">
+        <a class="nav-link" href="index.php?action=account_management">
+            <i class="fas fa-fw fa-user-cog"></i>
+            <span>Quản Lý Tài Khoản</span>
+        </a>
+    </li>
 
     <!-- Divider -->
     <hr class="sidebar-divider d-none d-md-block">

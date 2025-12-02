@@ -54,24 +54,37 @@
                             <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button"
                                 data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                 <span class="mr-2 d-none d-lg-inline text-gray-600 small">
-                                    <?= isset($_SESSION['user']) ? htmlspecialchars($_SESSION['user']['name']) : 'Guest' ?>
+                                    <?= htmlspecialchars($_SESSION['user_name'] ?? 'Guest', ENT_QUOTES, 'UTF-8') ?>
                                 </span>
-                                <img class="img-profile rounded-circle" src="assets/img/undraw_profile.svg">
+                                <?php
+                                // Get current user avatar
+                                $currentUserAvatar = null;
+                                if (isset($_SESSION['user_id'])) {
+                                    $userModel = new User();
+                                    $currentUserData = $userModel->find($_SESSION['user_id']);
+                                    if ($currentUserData && !empty($currentUserData['image']) && file_exists($currentUserData['image'])) {
+                                        $currentUserAvatar = $currentUserData['image'];
+                                    }
+                                }
+                                ?>
+                                <?php if ($currentUserAvatar): ?>
+                                    <img class="img-profile rounded-circle" src="<?= htmlspecialchars($currentUserAvatar) ?>" 
+                                         style="width: 40px; height: 40px; object-fit: cover;">
+                                <?php else: ?>
+                                    <img class="img-profile rounded-circle" src="assets/img/undraw_profile.svg">
+                                <?php endif; ?>
                             </a>
                             <!-- Dropdown - User Information -->
                             <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in"
                                 aria-labelledby="userDropdown">
-                                <a class="dropdown-item" href="#">
+                                <a class="dropdown-item" href="?action=profile">
                                     <i class="fas fa-user fa-sm fa-fw mr-2 text-gray-400"></i>
-                                    Profile
+                                    Thông tin cá nhân
                                 </a>
-                                <a class="dropdown-item" href="#">
-                                    <i class="fas fa-cogs fa-sm fa-fw mr-2 text-gray-400"></i>
-                                    Settings
-                                </a>
-                                <a class="dropdown-item" href="#">
-                                    <i class="fas fa-list fa-sm fa-fw mr-2 text-gray-400"></i>
-                                    Activity Log
+                                <div class="dropdown-divider"></div>
+                                <a class="dropdown-item" href="index.php?action=logout">
+                                    <i class="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i>
+                                    Đăng xuất
                                 </a>
                             </div>
                         </li>
@@ -103,27 +116,11 @@
                     <!-- Page Heading -->
                     <div class="d-sm-flex align-items-center justify-content-between mb-4">
                         <h1 class="h3 mb-0 text-gray-800">Dashboard</h1>
-<<<<<<< HEAD
-                    </div>
-
-                    <!-- Welcome Dashboard -->
-                    <div class="row">
-                        <div class="col-lg-12 mb-4">
-                            <div class="card shadow mb-4">
-                                <div class="card-header py-3">
-                                    <h6 class="m-0 font-weight-bold text-primary">Chào mừng đến với Tour Manager</h6>
-                                </div>
-                                <div class="card-body">
-                                    <p class="mb-0">Hệ thống quản lý tour du lịch chuyên nghiệp.</p>
-                                    <p class="mb-0">Sử dụng menu bên trái để truy cập các chức năng của hệ thống.</p>
-                                </div>
-                            </div>
-=======
                         <a href="#" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm"><i
-                                class="fas fa-download fa-sm text-white-50"></i> <!-- Generate Report --></a>
+                                class="fas fa-download fa-sm text-white-50"></i></a>
                     </div>
 
-                    <!-- Content Row: 3 card số liệu chính -->
+                    <!-- Content Row: 3 key metric cards -->
                     <div class="row">
                         <div class="col-xl-4 col-md-6 mb-4 d-flex align-items-stretch">
                             <div class="card border-left-primary shadow h-100 w-100 py-2">
@@ -132,7 +129,7 @@
                                         <div class="col mr-2">
                                             <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">Tổng doanh thu</div>
                                             <div class="h5 mb-0 font-weight-bold text-gray-800">
-                                                <?php echo isset($totalRevenue) ? number_format($totalRevenue, 0, ',', '.') . ' VNĐ' : '0 VNĐ'; ?>
+                                                <?= isset($totalRevenue) ? number_format($totalRevenue, 0, ',', '.') . ' VNĐ' : '0 VNĐ'; ?>
                                             </div>
                                         </div>
                                         <div class="col-auto">
@@ -149,7 +146,7 @@
                                         <div class="col mr-2">
                                             <div class="text-xs font-weight-bold text-success text-uppercase mb-1">Tổng booking</div>
                                             <div class="h5 mb-0 font-weight-bold text-gray-800">
-                                                <?php echo isset($totalBookings) ? $totalBookings : 0; ?> Booking
+                                                <?= isset($totalBookings) ? $totalBookings : 0; ?> Booking
                                             </div>
                                         </div>
                                         <div class="col-auto">
@@ -166,7 +163,7 @@
                                         <div class="col mr-2">
                                             <div class="text-xs font-weight-bold text-info text-uppercase mb-1">Tổng khách hàng</div>
                                             <div class="h5 mb-0 font-weight-bold text-gray-800">
-                                                <?php echo isset($totalCustomers) ? $totalCustomers : 0; ?> Khách hàng
+                                                <?= isset($totalCustomers) ? $totalCustomers : 0; ?> Khách hàng
                                             </div>
                                         </div>
                                         <div class="col-auto">
@@ -178,10 +175,7 @@
                         </div>
                     </div>
 
-                    <!-- Đã loại bỏ phần biểu đồ doanh thu theo tháng và tỷ lệ trạng thái booking theo yêu cầu -->
-
-                    <!-- Content Row: 2 bảng top booking và top khách hàng (chỉ 1 lần duy nhất) -->
-                    <!-- Top 5 booking mới nhất và Top 5 khách hàng nhiều booking nhất (chỉ 1 lần duy nhất) -->
+                    <!-- Top tables -->
                     <div class="row mb-4">
                         <div class="col-lg-6 mb-4">
                             <div class="card shadow mb-4 h-100">
@@ -203,10 +197,10 @@
                                                 <?php if (!empty($topBookings)) : ?>
                                                     <?php foreach ($topBookings as $b) : ?>
                                                         <tr>
-                                                            <td><?php echo htmlspecialchars($b['booking_code']); ?></td>
-                                                            <td><?php echo htmlspecialchars($b['customer_name']); ?></td>
-                                                            <td><?php echo number_format($b['total_amount'], 0, ',', '.'); ?> VNĐ</td>
-                                                            <td><?php echo htmlspecialchars($b['status']); ?></td>
+                                                            <td><?= htmlspecialchars($b['booking_code'] ?? '', ENT_QUOTES, 'UTF-8'); ?></td>
+                                                            <td><?= htmlspecialchars($b['customer_name'] ?? '', ENT_QUOTES, 'UTF-8'); ?></td>
+                                                            <td><?= isset($b['total_amount']) ? number_format($b['total_amount'], 0, ',', '.') . ' VNĐ' : '0 VNĐ'; ?></td>
+                                                            <td><?= htmlspecialchars($b['status'] ?? '', ENT_QUOTES, 'UTF-8'); ?></td>
                                                         </tr>
                                                     <?php endforeach; ?>
                                                 <?php else : ?>
@@ -236,8 +230,8 @@
                                                 <?php if (!empty($topCustomers)) : ?>
                                                     <?php foreach ($topCustomers as $c) : ?>
                                                         <tr>
-                                                            <td><?php echo htmlspecialchars($c['customer_name']); ?></td>
-                                                            <td><span class="badge badge-success"><?php echo $c['count']; ?></span></td>
+                                                            <td><?= htmlspecialchars($c['customer_name'] ?? '', ENT_QUOTES, 'UTF-8'); ?></td>
+                                                            <td><span class="badge badge-success"><?= htmlspecialchars($c['count'] ?? 0, ENT_QUOTES, 'UTF-8'); ?></span></td>
                                                         </tr>
                                                     <?php endforeach; ?>
                                                 <?php else : ?>
@@ -252,18 +246,18 @@
                     </div>
 
                     <div class="row">
-                        <!-- Biểu đồ doanh thu theo tháng -->
+                        <!-- Revenue chart -->
                         <div class="col-xl-8 col-lg-7 mb-4">
                             <div class="card shadow mb-4">
                                 <div class="card-header py-3">
-                                    <h6 class="m-0 font-weight-bold text-primary">Doanh thu theo tháng (<?php echo date('Y'); ?>)</h6>
+                                    <h6 class="m-0 font-weight-bold text-primary">Doanh thu theo tháng (<?= date('Y'); ?>)</h6>
                                 </div>
                                 <div class="card-body">
                                     <canvas id="revenueBarChart"></canvas>
                                 </div>
                             </div>
                         </div>
-                        <!-- Biểu đồ tròn trạng thái booking -->
+                        <!-- Booking status pie -->
                         <div class="col-xl-4 col-lg-5 mb-4">
                             <div class="card shadow mb-4">
                                 <div class="card-header py-3">
@@ -278,26 +272,36 @@
 
                     <script src="assets/vendor/chart.js/Chart.min.js"></script>
                     <script>
-                        // Biểu đồ doanh thu theo tháng
-                        var ctxBar = document.getElementById('revenueBarChart').getContext('2d');
-                        var revenueBarChart = new Chart(ctxBar, {
-                            type: 'bar',
-                            data: {
-                                labels: ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12"],
-                                datasets: [{
-                                    label: 'Doanh thu (VNĐ)',
-                                    backgroundColor: '#4e73df',
-                                    borderColor: '#4e73df',
-                                    data: <?php echo json_encode(array_values($monthlyRevenue)); ?>,
-                                }],
-                            },
-                            options: {
-                                responsive: true,
-                                scales: {
-                                    y: { beginAtZero: true }
+                        // Revenue bar chart
+                        var ctxBar = document.getElementById('revenueBarChart')?.getContext('2d');
+                        if (ctxBar) {
+                            new Chart(ctxBar, {
+                                type: 'bar',
+                                data: {
+                                    labels: ["1","2","3","4","5","6","7","8","9","10","11","12"],
+                                    datasets: [{
+                                        label: 'Doanh thu (VNĐ)',
+                                        backgroundColor: '#4e73df',
+                                        borderColor: '#4e73df',
+                                        data: <?= json_encode(array_values($monthlyRevenue)); ?>,
+                                    }]
+                                },
+                                options: { responsive: true, scales: { y: { beginAtZero: true } } }
+                            });
+                        }
+
+                        // Booking pie chart
+                        var ctxPie = document.getElementById('bookingPieChart')?.getContext('2d');
+                        if (ctxPie) {
+                            new Chart(ctxPie, {
+                                type: 'pie',
+                                data: {
+                                    labels: <?= json_encode(array_keys($pieStats)); ?>,
+                                    datasets: [{ data: <?= json_encode(array_values($pieStats)); ?>, backgroundColor: ['#4e73df','#1cc88a','#36b9cc','#f6c23e'] }]
                                 }
-                            }
-                        });
+                            });
+                        }
+                    </script>
 
                         // Biểu đồ tròn trạng thái booking
                         var ctxPie = document.getElementById('bookingPieChart').getContext('2d');

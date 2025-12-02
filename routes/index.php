@@ -1,7 +1,37 @@
 <?php
 
-$action = $_GET['action'] ?? '/';
+$action = isset($_GET['action']) ? trim($_GET['action']) : '/';
 
+// Public routes that don't require authentication
+$publicRoutes = ['login', 'logout'];
+
+// Check authentication for protected routes
+if (!in_array($action, $publicRoutes)) {
+    if (!isset($_SESSION['user_id'])) {
+        $_SESSION['error_message'] = 'Vui lòng đăng nhập để tiếp tục';
+        header('Location: index.php?action=login');
+        exit;
+    }
+}
+
+// HDV-only routes
+$hdvRoutes = ['hdv_dashboard', 'hdv_bookings', 'hdv_booking_detail', 'hdv_member_checkin', 'hdv_profile'];
+
+// Admin-only routes
+$adminRoutes = ['tours', 'tour_add', 'tour_edit', 'tour_delete', 'suppliers', 'supplier_add', 'supplier_edit', 'supplier_delete', 
+                'departures', 'departure_add', 'departure_edit', 'departure_delete', 'guides', 'guide_add', 'guide_edit', 'guide_delete',
+                'customers', 'customer_add', 'customer_edit', 'customer_delete', 'account_management', 'account_add', 'account_edit', 
+                'account_delete', 'account_toggle_active', 'admin_reservations'];
+
+// Role-based access control
+$userRole = (int)($_SESSION['user_role'] ?? 0);
+
+if ($userRole === 2 && in_array($action, $adminRoutes)) {
+    // HDV trying to access admin route
+    $_SESSION['error_message'] = 'Bạn không có quyền truy cập chức năng này';
+    header('Location: index.php?action=hdv_dashboard');
+    exit;
+}
 
 $homeController = new HomeController;
 $bookingController = new BookingController;
@@ -10,10 +40,52 @@ $customerController = new CustomerController;
 $guideController = new GuideController;
 $suppliersController = new SuppliersController;
 $adminController = new AdminController;
+// Auth
+$authController = class_exists('AuthController') ? new AuthController : null;
+// Account
+$accountController = class_exists('AccountController') ? new AccountController : null;
+// Profile
+$profileController = class_exists('ProfileController') ? new ProfileController : null;
+
+// Guard: explicitly handle login early to avoid edge-case mismatches
+if ($action === 'login') {
+    if ($authController) {
+        $authController->login();
+    } else {
+        require_once PATH_VIEW . 'user_login.php';
+    }
+    exit;
+}
+
+// HDV dashboard route
+if ($action === 'hdv_dashboard') {
+    require_once PATH_VIEW . 'hdv_dashboard.php';
+    exit;
+}
+
+// HDV bookings route
+if ($action === 'hdv_bookings') {
+    require_once PATH_VIEW . 'hdv_bookings.php';
+    exit;
+}
+
+// HDV booking detail route
+if ($action === 'hdv_booking_detail') {
+    require_once PATH_VIEW . 'hdv_booking_detail.php';
+    exit;
+}
+
+// HDV profile route
+if ($action === 'hdv_profile') {
+    require_once PATH_VIEW . 'hdv_profile.php';
+    exit;
+}
 
 
 match ($action) {
     '/'         => $homeController->index(),
+    // Logout
+    'logout' => $authController ? $authController->logout() : header('Location: index.php?action=login'),
 
     // Các đường dẫn Tour
     'tours'    => $homeController->tours(),
@@ -32,13 +104,6 @@ match ($action) {
     'supplier_add'    => $suppliersController->supplier_add(),
     'addSupplier'    => $suppliersController->addSupplier(),
     'supplier_delete'    => $suppliersController->supplier_delete(),
-
-    // Các đường dẫn Booking
-    'bookings'          => $bookingController->bookings(),
-    // 'tour_schedule'  => $homeController->tour_schedule(), // Đã xóa vì không có hàm này
-
-    // Các đường dẫn Suppliers
-    'suppliers'    => $suppliersController->suppliers(),
 
     // Các đường dẫn Booking
     'bookings'          => $bookingController->bookings(),
@@ -111,6 +176,19 @@ match ($action) {
     'admin_reservations' => $adminController->reservations(),
     'admin_confirm_reservation' => $adminController->confirmReservation(),
     'admin_expire_reservation' => $adminController->expireReservation(),
+    // Account Management routes
+    'account_management' => $accountController ? $accountController->index() : require_once PATH_VIEW . 'account_management.php',
+    'account_add' => $accountController ? $accountController->add() : require_once PATH_VIEW . 'account_management.php',
+    'account_store' => $accountController ? $accountController->store() : require_once PATH_VIEW . 'account_management.php',
+    'account_edit' => $accountController ? $accountController->edit() : require_once PATH_VIEW . 'account_management.php',
+    'account_update' => $accountController ? $accountController->update() : require_once PATH_VIEW . 'account_management.php',
+    'account_delete' => $accountController ? $accountController->delete() : require_once PATH_VIEW . 'account_management.php',
+    'account_toggle_active' => $accountController ? $accountController->toggle_active() : require_once PATH_VIEW . 'account_management.php',
+    'account_profile' => $accountController ? $accountController->profile() : require_once PATH_VIEW . 'account_management.php',
+    'account_profile_update' => $accountController ? $accountController->profile_update() : require_once PATH_VIEW . 'account_management.php',
+    // Profile routes (for logged-in user)
+    'profile' => $profileController ? $profileController->index() : require_once PATH_VIEW . 'profile.php',
+    'profile_update' => $profileController ? $profileController->update() : require_once PATH_VIEW . 'profile.php',
     default => require_once PATH_VIEW . '404.html',
 };
 ?>
