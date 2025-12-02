@@ -56,16 +56,6 @@ endif;
                 <!-- Topbar -->
                 <?php require_once 'views/includes/topbar.php'; ?>
                 <!-- End of Topbar -->
-                                    <i class="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i>
-                                    Logout
-                                </a>
-                            </div>
-                        </li>
-
-                    </ul>
-
-                </nav>
-                <!-- End of Topbar -->
 
                 <!-- Begin Page Content -->
                 <div class="container-fluid">
