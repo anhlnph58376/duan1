@@ -1,1 +1,49 @@
-configs/env.php
+# Ignore uploaded files (keep structure only)
+uploads/avatars/*.jpg
+uploads/avatars/*.png
+uploads/avatars/*.gif
+uploads/tours/*.jpg
+uploads/tours/*.png
+uploads/tours/*.gif
+uploads/tours/gallery/*.jpg
+uploads/tours/gallery/*.png
+
+# Keep directory structure
+!uploads/avatars/.gitkeep
+!uploads/tours/.gitkeep
+!uploads/tours/gallery/.gitkeep
+
+# Ignore log files
+storage/logs/*.log
+storage/logs/*.txt
+
+# Ignore cache
+storage/cache/*
+
+# Ignore temp files
+*.tmp
+*.temp
+*.bak
+*.swp
+*.swo
+*~
+
+# Ignore OS files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Ignore IDE files
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+
+# Ignore composer vendor
+vendor/
+
+# Ignore node modules
+node_modules/
+
+# Keep important config (but ignore sensitive data if needed)
+# configs/env.php
