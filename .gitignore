@@ -1,0 +1,27 @@
+# Ignore uploaded files (keep structure only)
+uploads/avatars/*.jpg
+uploads/avatars/*.png
+uploads/avatars/*.gif
+uploads/tours/*.jpg
+uploads/tours/*.png
+uploads/tours/*.gif
+uploads/tours/gallery/*.jpg
+uploads/tours/gallery/*.png
+uploads/tours/gallery/*.gif
+
+# Keep directory structure
+!uploads/avatars/.gitkeep
+!uploads/tours/.gitkeep
+!uploads/tours/gallery/.gitkeep
+
+# Ignore log files
+storage/logs/*.log
+storage/logs/*.txt
+
+# Ignore cache
+storage/cache/*
+
+# Ignore temp files
+*.tmp
+*.temp
+*.bak
